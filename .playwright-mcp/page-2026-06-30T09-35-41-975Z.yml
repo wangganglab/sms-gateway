@@ -1,0 +1,61 @@
+- generic [ref=f4e4]:
+  - generic [ref=f4e5]:
+    - generic [ref=f4e6]:
+      - text: 企业名称
+      - textbox "请直接选择或搜索选择" [ref=f4e10] [cursor=pointer]
+    - generic [ref=f4e12]:
+      - text: 企业用户
+      - textbox "请直接选择或搜索选择" [ref=f4e16] [cursor=pointer]
+    - generic [ref=f4e18]:
+      - generic [ref=f4e19]: 消息类型
+      - textbox "请选择" [ref=f4e23] [cursor=pointer]
+    - generic [ref=f4e25]:
+      - text: 批次号
+      - textbox [ref=f4e27]
+    - generic [ref=f4e28]:
+      - text: 手机号码
+      - textbox [ref=f4e30]
+    - generic [ref=f4e31]:
+      - text: 消息内容
+      - textbox [ref=f4e33]
+    - generic [ref=f4e34]:
+      - text: 分拣时间
+      - textbox [ref=f4e36]
+      - generic [ref=f4e37]: "--"
+      - textbox [ref=f4e39]
+    - button "搜索" [ref=f4e41] [cursor=pointer]
+  - generic [ref=f4e44]:
+    - generic [ref=f4e46]:
+      - generic "筛选列" [ref=f4e47] [cursor=pointer]:
+        - generic [ref=f4e48]: 
+      - generic "导出" [ref=f4e49] [cursor=pointer]:
+        - generic [ref=f4e50]: 
+      - generic "打印" [ref=f4e51] [cursor=pointer]:
+        - generic [ref=f4e52]: 
+    - generic [ref=f4e53]:
+      - generic [ref=f4e55]: 
+      - table [ref=f4e57]:
+        - rowgroup [ref=f4e58]:
+          - row "企业名称/企业用户 批次号 手机号 内容 类型/字数/号码/计费 协议/IP 审核 提交时间 分拣时间" [ref=f4e59]:
+            - columnheader "企业名称/企业用户" [ref=f4e60]:
+              - generic [ref=f4e61]: 企业名称/企业用户
+            - columnheader "批次号" [ref=f4e62]:
+              - generic [ref=f4e63]: 批次号
+            - columnheader "手机号" [ref=f4e64]:
+              - generic [ref=f4e65]: 手机号
+            - columnheader "内容" [ref=f4e66]:
+              - generic [ref=f4e67]: 内容
+            - columnheader "类型/字数/号码/计费" [ref=f4e68]:
+              - generic [ref=f4e69]: 类型/字数/号码/计费
+            - columnheader "协议/IP" [ref=f4e70]:
+              - generic [ref=f4e71]: 协议/IP
+            - columnheader "审核" [ref=f4e72]:
+              - generic [ref=f4e73]: 审核
+            - columnheader "提交时间" [ref=f4e74]:
+              - generic [ref=f4e75]: 提交时间
+            - columnheader "分拣时间" [ref=f4e76]:
+              - generic [ref=f4e77]: 分拣时间
+      - generic [ref=f4e78]:
+        - table:
+          - rowgroup
+      - generic [ref=f4e80]: 

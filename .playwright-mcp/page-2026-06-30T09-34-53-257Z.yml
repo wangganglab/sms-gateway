@@ -1,0 +1,51 @@
+- generic [ref=f3e5]:
+  - generic [ref=f3e6]:
+    - generic [ref=f3e7]:
+      - text: 协议类型
+      - textbox "请选择" [ref=f3e11] [cursor=pointer]
+    - generic [ref=f3e13]:
+      - text: 通道名称
+      - textbox [ref=f3e15]
+    - generic [ref=f3e16]:
+      - text: 通道编号
+      - textbox [ref=f3e18]
+    - generic [ref=f3e19]:
+      - text: 状态
+      - textbox "请选择" [ref=f3e23] [cursor=pointer]: 启动
+    - button "搜索" [ref=f3e26] [cursor=pointer]
+  - generic [ref=f3e29]:
+    - generic [ref=f3e31]:
+      - generic "筛选列" [ref=f3e32] [cursor=pointer]:
+        - generic [ref=f3e33]: 
+      - generic "导出" [ref=f3e34] [cursor=pointer]:
+        - generic [ref=f3e35]: 
+      - generic "打印" [ref=f3e36] [cursor=pointer]:
+        - generic [ref=f3e37]: 
+    - generic [ref=f3e38]:
+      - generic [ref=f3e40]: 
+      - table [ref=f3e42]:
+        - rowgroup [ref=f3e43]:
+          - row "操作 编号/名称 状态/会话 账号/密码 签名方向/位置/码号 行业 协议/版本/分组编码 IP/PORT/连接数/速度/编码 创建时间" [ref=f3e44]:
+            - columnheader [ref=f3e45]
+            - columnheader "操作" [ref=f3e46]:
+              - generic [ref=f3e47]: 操作
+            - columnheader "编号/名称" [ref=f3e48]:
+              - generic [ref=f3e49]: 编号/名称
+            - columnheader "状态/会话" [ref=f3e50]:
+              - generic [ref=f3e51]: 状态/会话
+            - columnheader "账号/密码" [ref=f3e52]:
+              - generic [ref=f3e53]: 账号/密码
+            - columnheader "签名方向/位置/码号" [ref=f3e54]:
+              - generic [ref=f3e55]: 签名方向/位置/码号
+            - columnheader "行业" [ref=f3e56]:
+              - generic [ref=f3e57]: 行业
+            - columnheader "协议/版本/分组编码" [ref=f3e58]:
+              - generic [ref=f3e59]: 协议/版本/分组编码
+            - columnheader "IP/PORT/连接数/速度/编码" [ref=f3e60]:
+              - generic [ref=f3e61]: IP/PORT/连接数/速度/编码
+            - columnheader "创建时间" [ref=f3e62]:
+              - generic [ref=f3e63]: 创建时间
+      - generic [ref=f3e64]:
+        - table:
+          - rowgroup
+      - generic [ref=f3e66]: 
