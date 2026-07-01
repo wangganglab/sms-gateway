@@ -82,7 +82,7 @@
 - ✅ 第1批 R2 操作员角色（2026-06-30）—— `operator_test/123456`，菜单白名单 4 项（账户/短信/报表/财务）
 - ✅ 第2批 R1 短信签名管理（2026-07-01）—— sms_signature 表 + CRUD + 菜单 006038 + 发送校验
 - 🔄 第3批 R3：时限清理定时任务 ✅（扩展 DropTableTask + code 表配置项）+ 管理员设置 ✅（复用 015003）；不可篡改(DB权限收紧) ⏸ 留人工门禁
-- ⏭ 第4批 R5 台账(扩字段+新表+预警+视图) + R4-A 拒收标记
+- 🔄 第4批 R5/R4-A：数据基础 ✅（3 新表 cooperation_period/complaint/unsubscribe_log + enterprise 扩6字段/product 扩4字段，DDL 脚本 `sql/r4-r5-tables.sql`）；台账页面/预警/视图/拒收识别 ⏭ 新 session（代码量大）
 
 **本地开发工作流**：`sms-gateway/` git 仓库（main），源码基线在 `src/sms_platform/`，本地改 → `deploy-sms.sh` 部署。权限改动无需重启（实时查库）。
 
