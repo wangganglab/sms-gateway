@@ -85,6 +85,17 @@
 				, {title: '已消费', width:180,templet:function (d) {
 						return "¥ "+handleData(d.used_Amount) + "=" + handleData(d.sent_Count) +"条";
 					}}
+				, {field: 'credit_Code', title: '信用代码', width: 180}
+				, {field: 'qualification_Expiry_Date', title: '资质有效期', width: 120}
+				, {title: '合作期限', width: 200, templet: function (d) {
+						return handleData(d.cooperation_Start_Date) + ' ~ ' + handleData(d.cooperation_End_Date);
+					}}
+				, {field: 'contact_Name', title: '联系人', width: 100}
+				, {field: 'business_Scope', title: '经营范围', minWidth: 150, templet: function (d) {
+						var v = d.business_Scope;
+						if (!v) return '---';
+						return '<span title="' + v.replace(/"/g, '&quot;') + '">' + (v.length > 15 ? v.substring(0, 15) + '...' : v) + '</span>';
+					}}
                 , {field: 'create_Date', title: '创建时间', width: 200}
             ]]
         ,done: function(res){

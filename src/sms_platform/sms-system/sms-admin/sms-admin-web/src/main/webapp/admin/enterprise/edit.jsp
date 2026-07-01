@@ -49,9 +49,49 @@
             <textarea type="text" maxlength="2048" name="remark" autocomplete="off" class="layui-textarea">${eBean.remark}</textarea>
         </div>
     </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">信用代码</label>
+        <div class="layui-input-block" style="width: 70%">
+            <input type="text" maxlength="18" name="credit_Code" value="<c:out value="${eBean.credit_Code}"/>" placeholder="统一社会信用代码" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">合作方联系人</label>
+        <div class="layui-input-inline">
+            <input type="text" maxlength="64" name="contact_Name" value="<c:out value="${eBean.contact_Name}"/>" placeholder="请输入" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">资质有效期</label>
+        <div class="layui-input-inline">
+            <input type="text" name="qualification_Expiry_Date" id="qualification_Expiry_Date" value="<fmt:formatDate value="${eBean.qualification_Expiry_Date}" pattern="yyyy-MM-dd HH:mm:ss"/>" placeholder="请选择日期" autocomplete="off" class="layui-input">
+        </div>
+        <label class="layui-form-label">合作开始日</label>
+        <div class="layui-input-inline">
+            <input type="text" name="cooperation_Start_Date" id="cooperation_Start_Date" value="<fmt:formatDate value="${eBean.cooperation_Start_Date}" pattern="yyyy-MM-dd HH:mm:ss"/>" placeholder="请选择日期" autocomplete="off" class="layui-input">
+        </div>
+        <label class="layui-form-label">合作结束日</label>
+        <div class="layui-input-inline">
+            <input type="text" name="cooperation_End_Date" id="cooperation_End_Date" value="<fmt:formatDate value="${eBean.cooperation_End_Date}" pattern="yyyy-MM-dd HH:mm:ss"/>" placeholder="请选择日期" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">经营范围</label>
+        <div class="layui-input-block">
+            <textarea maxlength="1024" name="business_Scope" autocomplete="off" class="layui-textarea">${eBean.business_Scope}</textarea>
+        </div>
+    </div>
     <div class="layui-form-item layui-hide">
         <input type="button" lay-submit lay-filter="submit" id="layuiadmin-app-form-submit" value="确认">
     </div>
 </form>
 <%@ include file="/admin/common/layui_bottom.jsp" %>
+<script>
+    layui.use(['laydate'], function () {
+        var laydate = layui.laydate;
+        laydate.render({ elem: '#qualification_Expiry_Date', type: 'datetime', trigger: 'click' });
+        laydate.render({ elem: '#cooperation_Start_Date', type: 'datetime', trigger: 'click' });
+        laydate.render({ elem: '#cooperation_End_Date', type: 'datetime', trigger: 'click' });
+    });
+</script>
 </body>

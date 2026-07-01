@@ -16,7 +16,9 @@
 | v4.5 | 业务台账聚合视图 | 一站式查看业务台账汇总 | 上述表 ✅ |
 | v4.6 | R4-A 拒收识别 | 上行拒收（TD 等）自动入台账，可查询 | unsubscribe_log 表 ✅ |
 
-## v4.1 合作方台账（首个切片，新 session 启动）
+## v4.1 合作方台账 ✅（2026-07-01 完成）
+
+> Enterprise.java + EnterpriseMapper.xml(7 处字段列表) + edit.jsp + list.jsp + partner_menu.sql(菜单 005007)。后端 Controller/Service/DAO/序列化器免改（链路透传）。验证：mvn EXIT 0 + 3 实例部署 200 + SQL 6 字段读写正常 + 启动无 ERROR。Web 端到端点验待人工（登录有验证码+RSA，无法 curl）。
 
 ### 北极星
 合作方资质信息可查可管（合规：合作方台账要求信用代码/资质/期限）。
