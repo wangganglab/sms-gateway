@@ -430,4 +430,38 @@ public interface IEnterpriseManage {
 	 */
 	List<Enterprise> queryAddEnterpriseCount();
 
+	/**
+	 * 合作期限台账 v4.2
+	 * 查询合作期限列表
+	 * @param condition
+	 * @return
+	 */
+	List<CooperationPeriod> queryCooperationPeriodList(CooperationPeriodExt condition);
+
+	/**
+	 * 根据ID查询合作期限
+	 * @param id
+	 * @return
+	 */
+	CooperationPeriod queryCooperationPeriodById(Integer id);
+
+	/**
+	 * 添加合作期限
+	 * @param data
+	 * @return
+	 */
+	CooperationPeriod addCooperationPeriod(CooperationPeriod data);
+
+	/**
+	 * 修改合作期限
+	 * @param data
+	 */
+	void editCooperationPeriod(CooperationPeriodExt data);
+
+	/**
+	 * 终止合作期限（状态改为0）
+	 * @param id
+	 */
+	void terminateCooperationPeriod(Integer id);
+
 }

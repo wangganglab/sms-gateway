@@ -26,6 +26,20 @@
 - 后端免改：Controller/EnterpriseManageImpl/EnterpriseExt/DAO/FilterObjectMapper/SmsUIObjectMapper（链路透传已验证）
 - 验证：mvn EXIT 0 + 3 实例部署 200 + SQL 6 字段读写正常 + 启动无 ERROR；Web 端到端点验待人工（登录有验证码+RSA，无法 curl 自动化）
 
+#### v4.2 合作期限台账（已交付，2026-07-01）
+- 完成态：管理员在「业务管理」下打开「合作期限台账」，查看/新增/编辑/终止合作期限记录（企业+端口+子端口维度），列表按"距到期天数"高亮，合同 URL 字段可填
+- 做了：
+  - CooperationPeriod 全套（Entity/Example/Mapper/DAO 三件套/Ext Entity/Service 6 方法/Controller 6 方法）仿 commit a95a164 签名管理模式
+  - cooperation_period_list/add/edit.jsp 三页面（列表含 30/90 天高亮 templet，add/edit 含企业下拉 `ht:heroenterpriseselect` + 产品下拉 `ht:heroproductselect` + 状态字典 `ht:herocodeselect cooperationStatus` + 3 日期 fmt+laydate datetime + 合同 URL 手填）
+  - cooperation_period_menu.sql：code 字典 cooperationStatus(1 有效/0 终止) + 菜单 005008 + 7 子按钮 + role 1/3/5 分配
+  - 状态代替删除：列表默认筛选 Status_Code='1'，"终止"按钮 update Status_Code='0'
+- 调整（实现中发现）：
+  - 合同附件降级为 URL 手填（项目无独立上传接口，留 vNext 做独立 RequestMapping，见 memory `sms-project-no-upload-endpoint`）
+  - CooperationPeriodExample 补 `import java.util.Date`（MBG Example 含 Date 字段 Criteria 必须 import，见 memory `sms-mbg-example-import-date`）
+- 不做（进 vNext 候选池）：alarm 体系接入（用户决策"仅高亮"）、定时任务扫描、邮件/短信通知、自动终止
+- 后端仿签名管理全手写（非 v4.1 扩字段模式，因 cooperation_period 是新表）
+- 验证：mvn EXIT 0 + 3 实例部署 200 + 启动无 ERROR + 菜单 7 项入库 + 4 条测试数据就绪；Web 端到端点验待人工
+
 ### vNext 候选池
 - v4.2 合作期限台账 + 到期预警（cooperation_period 表，复用 alarm）
 - v4.3 号码台账（product 扩字段）

@@ -1135,4 +1135,80 @@ public class EnterpriseController extends BaseAdminController {
         return "/enterprise/user_submit_speed";
     }
 
+    // ==================== 合作期限台账 v4.2 ====================
+
+    /**
+     * 合作期限列表
+     */
+    @RequestMapping("enterprise_cooperationPeriodList")
+    @ResponseBody
+    public String cooperationPeriodList(CooperationPeriodExt condition) {
+        List<CooperationPeriod> list = enterpriseManage.queryCooperationPeriodList(condition);
+        return new SmsUIObjectMapper().asSuccessString(list, condition.getPagination());
+    }
+
+    /**
+     * 新增合作期限前置
+     */
+    @RequestMapping("enterprise_preAddCooperationPeriod")
+    public String preAddCooperationPeriod() {
+        return "/enterprise/cooperation_period_add";
+    }
+
+    /**
+     * 新增合作期限
+     */
+    @RequestMapping("enterprise_addCooperationPeriod")
+    @ResponseBody
+    public LayUiJsonObjectFmt addCooperationPeriod(CooperationPeriod data) {
+        try {
+            enterpriseManage.addCooperationPeriod(data);
+        } catch (Exception e) {
+            return LayuiResultUtil.fail(e.getMessage());
+        }
+        return LayuiResultUtil.success();
+    }
+
+    /**
+     * 编辑合作期限前置
+     */
+    @RequestMapping("enterprise_preCooperationPeriodEdit")
+    public String preCooperationPeriodEdit(BaseParamEntity entity) {
+        if (entity.getCkIds() == null || entity.getCkIds().size() > 1) {
+            throw new ServiceException("id is not null");
+        }
+        CooperationPeriod data = enterpriseManage.queryCooperationPeriodById(entity.getCkIds().get(0));
+        request.setAttribute("cpBean", data);
+        return "/enterprise/cooperation_period_edit";
+    }
+
+    /**
+     * 编辑合作期限
+     */
+    @RequestMapping("enterprise_editCooperationPeriod")
+    @ResponseBody
+    public LayUiJsonObjectFmt editCooperationPeriod(CooperationPeriodExt data) throws Exception {
+        enterpriseManage.editCooperationPeriod(data);
+        return LayuiResultUtil.success();
+    }
+
+    /**
+     * 终止合作期限（批量，状态改为0）
+     */
+    @RequestMapping("enterprise_terminateCooperationPeriod")
+    @ResponseBody
+    public LayUiJsonObjectFmt terminateCooperationPeriod(BaseParamEntity entity) {
+        try {
+            if (entity.getCkIds() == null || entity.getCkIds().isEmpty()) {
+                return LayuiResultUtil.fail("请选择要终止的记录");
+            }
+            for (Integer id : entity.getCkIds()) {
+                enterpriseManage.terminateCooperationPeriod(id);
+            }
+        } catch (Exception e) {
+            return LayuiResultUtil.fail(e.getMessage());
+        }
+        return LayuiResultUtil.success();
+    }
+
 }

@@ -900,6 +900,70 @@ public class EnterpriseManageImpl extends BaseEnterpriseManage implements IEnter
         return enterpriseDAO.selectByExample(example);
     }
 
+    // ==================== 合作期限台账 v4.2 ====================
+
+    @Override
+    public List<CooperationPeriod> queryCooperationPeriodList(CooperationPeriodExt condition) {
+        CooperationPeriodExample example = new CooperationPeriodExample();
+        CooperationPeriodExample.Criteria cri = example.createCriteria();
+        if (!StringUtils.isEmpty(condition.getEnterprise_No())) {
+            cri.andEnterprise_NoEqualTo(condition.getEnterprise_No());
+        }
+        if (!StringUtils.isEmpty(condition.getProduct_No())) {
+            cri.andProduct_NoLike("%" + condition.getProduct_No() + "%");
+        }
+        if (!StringUtils.isEmpty(condition.getStatus_Code())) {
+            cri.andStatus_CodeEqualTo(condition.getStatus_Code());
+        }
+        if (condition.getId() != null) {
+            cri.andIdEqualTo(condition.getId());
+        }
+        example.setPagination(condition.getPagination());
+        example.setOrderByClause(" id desc ");
+        return cooperationPeriodDAO.selectByExamplePage(example);
+    }
+
+    @Override
+    public CooperationPeriod queryCooperationPeriodById(Integer id) {
+        return cooperationPeriodDAO.selectByPrimaryKey(id);
+    }
+
+    @Override
+    public CooperationPeriod addCooperationPeriod(CooperationPeriod data) {
+        // 校验：企业编号必填
+        if (StringUtils.isEmpty(data.getEnterprise_No())) {
+            throw new ServiceException("企业编号不能为空");
+        }
+        // 校验：开始日期 < 结束日期
+        if (data.getStart_Date() != null && data.getEnd_Date() != null) {
+            if (data.getStart_Date().after(data.getEnd_Date())) {
+                throw new ServiceException("开始日期必须小于结束日期");
+            }
+        }
+        data.setStatus_Code(StringUtils.isEmpty(data.getStatus_Code()) ? "1" : data.getStatus_Code());
+        data.setCreate_Date(new Date());
+        cooperationPeriodDAO.insert(data);
+        return data;
+    }
+
+    @Override
+    public void editCooperationPeriod(CooperationPeriodExt data) {
+        // 校验：开始日期 < 结束日期
+        if (data.getStart_Date() != null && data.getEnd_Date() != null) {
+            if (data.getStart_Date().after(data.getEnd_Date())) {
+                throw new ServiceException("开始日期必须小于结束日期");
+            }
+        }
+        cooperationPeriodDAO.updateByPrimaryKeySelective(data);
+    }
+
+    @Override
+    public void terminateCooperationPeriod(Integer id) {
+        CooperationPeriod record = new CooperationPeriod();
+        record.setId(id);
+        record.setStatus_Code("0"); // 终止
+        cooperationPeriodDAO.updateByPrimaryKeySelective(record);
+    }
 
     private String getPlainPassword(String encryptPassword) {
         //rsa解密

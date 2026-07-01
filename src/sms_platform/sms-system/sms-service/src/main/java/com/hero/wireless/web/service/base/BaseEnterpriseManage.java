@@ -66,6 +66,8 @@ public class BaseEnterpriseManage extends BaseService {
 	protected ISystemLogDAO<SystemLog> systemLogDAO;
     @Resource(name = "IPropertiesDAO")
     protected IPropertiesDAO<Properties> propertiesDAO;
+	@Resource(name = "ICooperationPeriodDAO")
+	protected ICooperationPeriodDAO<CooperationPeriod> cooperationPeriodDAO;
 
 	protected void doCheckUserName(EnterpriseUserExt userInfo) {
 		EnterpriseUserExample example = new EnterpriseUserExample();
