@@ -74,6 +74,8 @@ public class FilterObjectMapper extends EscapeObjectMapper {
 		addCodeTranslate(SmsStatisticsExt.class, new String[] { "message_type_code,message_Type_Code","location,province_Code", "country,country_Number" });
 		addCodeTranslate(SmsTemplate.class,
 				new String[] { "trade,template_Type", "templateCheckStatus,approve_Status" });
+		addCodeTranslate(SmsSignature.class,
+				new String[] { "templateCheckStatus,approve_Status", "signatureStatus,status_Code" });
 		addCodeTranslate(Product.class, new String[] { "state,status_Code", "trade,trade_Type_Code" });
 		addCodeTranslate(SensitiveWord.class,
 				new String[] { "trade,trade_Type_Code", "sensitive_word_pool,pool_Code" });

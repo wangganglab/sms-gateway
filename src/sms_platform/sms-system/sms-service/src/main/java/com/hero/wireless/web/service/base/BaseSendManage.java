@@ -13,6 +13,7 @@ import com.hero.wireless.web.config.DatabaseCache;
 import com.hero.wireless.web.dao.business.*;
 import com.hero.wireless.web.dao.business.ext.IContactExtDAO;
 import com.hero.wireless.web.dao.business.ext.ISmsTemplateExtDAO;
+import com.hero.wireless.web.dao.business.ext.ISmsSignatureExtDAO;
 import com.hero.wireless.web.dao.send.*;
 import com.hero.wireless.web.dao.send.ext.*;
 import com.hero.wireless.web.entity.base.Pagination;
@@ -116,6 +117,8 @@ public class BaseSendManage extends BaseService {
 	protected INoticeManage noticeManage;
 	@Resource(name = "ISmsTemplateExtDAO")
 	protected ISmsTemplateExtDAO smsTemplateExtDAO;
+	@Resource(name = "ISmsSignatureExtDAO")
+	protected ISmsSignatureExtDAO smsSignatureExtDAO;
 	@Resource(name = "IMmsTemplateDAO")
 	private IMmsTemplateDAO<MmsTemplate> mmsTemplateDAO;
 	@Resource(name = "IMmsMaterialDAO")
@@ -283,6 +286,19 @@ public class BaseSendManage extends BaseService {
 				content = addUserSignatureToContent(data.getContent(), user);
 				//根据用户签名位置添加内容
 				data.setContent(content);
+			}
+			//R1 短信签名校验:内容含【签名】时,该企业该签名必须已审核通过(Approve_Status=1)且启用
+			String contentSignature = SMSUtil.getSignature(content);
+			if (StringUtils.isNotEmpty(contentSignature)) {
+				SmsSignatureExample signExample = new SmsSignatureExample();
+				SmsSignatureExample.Criteria signCri = signExample.createCriteria();
+				signCri.andEnterprise_NoEqualTo(user.getEnterprise_No());
+				signCri.andSignature_ContentEqualTo(contentSignature);
+				signCri.andApprove_StatusEqualTo("1");
+				List<SmsSignature> matchedSignatures = smsSignatureExtDAO.selectByExample(signExample);
+				if (matchedSignatures == null || matchedSignatures.isEmpty()) {
+					throw new ServiceException("短信签名[" + contentSignature + "]未审核通过,禁止发送");
+				}
 			}
 		}
 		//设置是否审核短信

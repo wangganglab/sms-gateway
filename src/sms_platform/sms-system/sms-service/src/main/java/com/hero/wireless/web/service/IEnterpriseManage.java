@@ -302,6 +302,50 @@ public interface IEnterpriseManage {
 	void updateSmsTemplateExt(SmsTemplateExt smsTemplateExt);
 
 	/**
+	 * 短信签名列表
+	 *
+	 * @param smsSignatureExt
+	 * @return
+	 */
+	List<SmsSignature> querySmsSignatureList(SmsSignatureExt smsSignatureExt);
+
+	/**
+	 * 添加短信签名
+	 *
+	 * @param smsSignature
+	 */
+	void addSmsSignature(SmsSignature smsSignature);
+
+	/**
+	 * 修改短信签名
+	 *
+	 * @param smsSignature
+	 */
+	void editSmsSignature(SmsSignature smsSignature);
+
+	/**
+	 * 删除短信签名
+	 *
+	 * @param ckIds
+	 */
+	void deleteSmsSignature(List<Integer> ckIds);
+
+	/**
+	 * 查询短信签名
+	 *
+	 * @param integer
+	 * @return
+	 */
+	SmsSignature querySmsSignatureById(Integer integer);
+
+	/**
+	 * 审核短信签名 / 启停
+	 *
+	 * @param smsSignatureExt
+	 */
+	void updateSmsSignatureExt(SmsSignatureExt smsSignatureExt);
+
+	/**
 	 * 
 	 * 通过企业编号查询企业信息
 	 * 

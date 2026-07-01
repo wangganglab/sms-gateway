@@ -58,6 +58,8 @@ public class BaseEnterpriseManage extends BaseService {
 	protected IEnterpriseUserExtDAO enterpriseUserExtDAO;
 	@Resource(name = "ISmsTemplateDAO")
 	protected ISmsTemplateDAO<SmsTemplate> smsTemplateDAO;
+	@Resource(name = "ISmsSignatureDAO")
+	protected ISmsSignatureDAO<SmsSignature> smsSignatureDAO;
 	@Resource(name = "IEnterpriseUserFeeDAO")
 	protected IEnterpriseUserFeeDAO<EnterpriseUserFee> enterpriseUserFeeDAO;
 	@Resource(name = "ISystemLogDAO")

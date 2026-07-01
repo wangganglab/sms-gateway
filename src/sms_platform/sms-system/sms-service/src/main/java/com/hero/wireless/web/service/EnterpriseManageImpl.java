@@ -613,6 +613,66 @@ public class EnterpriseManageImpl extends BaseEnterpriseManage implements IEnter
     }
 
     @Override
+    public List<SmsSignature> querySmsSignatureList(SmsSignatureExt condition) {
+        SmsSignatureExample example = new SmsSignatureExample();
+        SmsSignatureExample.Criteria cri = example.createCriteria();
+        if (!StringUtils.isEmpty(condition.getEnterprise_No())) {
+            cri.andEnterprise_NoEqualTo(condition.getEnterprise_No());
+        }
+        if (!StringUtils.isEmpty(condition.getSignature_Content())) {
+            cri.andSignature_ContentLike("%" + condition.getSignature_Content() + "%");
+        }
+        if (!StringUtils.isEmpty(condition.getSignature_Type())) {
+            cri.andSignature_TypeEqualTo(condition.getSignature_Type());
+        }
+        if (!StringUtils.isEmpty(condition.getApprove_Status())) {
+            cri.andApprove_StatusEqualTo(condition.getApprove_Status());
+        }
+        if (!StringUtils.isEmpty(condition.getStatus_Code())) {
+            cri.andStatus_CodeEqualTo(condition.getStatus_Code());
+        }
+        if (condition.getId() != null) {
+            cri.andIdEqualTo(condition.getId());
+        }
+        example.setPagination(condition.getPagination());
+        example.setOrderByClause(" id desc ");
+        return smsSignatureDAO.selectByExamplePage(example);
+    }
+
+    @Override
+    public void addSmsSignature(SmsSignature smsSignature) {
+        smsSignature.setCreate_Date(new Date());
+        smsSignature.setStatus_Code(Constant.STATUS_CODE_START);
+        smsSignatureDAO.insert(smsSignature);
+    }
+
+    @Override
+    public void editSmsSignature(SmsSignature smsSignature) {
+        SmsSignatureExample example = new SmsSignatureExample();
+        SmsSignatureExample.Criteria cri = example.createCriteria();
+        cri.andIdEqualTo(smsSignature.getId());
+        smsSignatureDAO.updateByExampleSelective(smsSignature, example);
+    }
+
+    @Override
+    public void deleteSmsSignature(List<Integer> ckIds) {
+        SmsSignatureExample example = new SmsSignatureExample();
+        SmsSignatureExample.Criteria cri = example.createCriteria();
+        cri.andIdIn(ckIds);
+        smsSignatureDAO.deleteByExample(example);
+    }
+
+    @Override
+    public SmsSignature querySmsSignatureById(Integer id) {
+        return smsSignatureDAO.selectByPrimaryKey(id);
+    }
+
+    @Override
+    public void updateSmsSignatureExt(SmsSignatureExt smsSignatureExt) {
+        smsSignatureDAO.updateByPrimaryKeySelective(smsSignatureExt);
+    }
+
+    @Override
     public Enterprise queryEnterpriseByNo(String enterprise_no) {
         if (StringUtils.isEmpty(enterprise_no)) {
             return null;

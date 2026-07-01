@@ -1,0 +1,44 @@
+- generic [ref=f3e5]:
+  - generic [ref=f3e6]:
+    - generic [ref=f3e7]:
+      - text: 企业名称
+      - textbox "请直接选择或搜索选择" [ref=f3e11] [cursor=pointer]
+    - generic [ref=f3e13]:
+      - text: 签名内容
+      - textbox [ref=f3e15]
+    - generic [ref=f3e16]:
+      - text: 审核状态
+      - textbox "请选择" [ref=f3e20] [cursor=pointer]: 待审核
+    - button "搜索" [ref=f3e23] [cursor=pointer]
+  - generic [ref=f3e26]:
+    - generic [ref=f3e28]:
+      - generic "筛选列" [ref=f3e29] [cursor=pointer]:
+        - generic [ref=f3e30]: 
+      - generic "导出" [ref=f3e31] [cursor=pointer]:
+        - generic [ref=f3e32]: 
+      - generic "打印" [ref=f3e33] [cursor=pointer]:
+        - generic [ref=f3e34]: 
+    - generic [ref=f3e35]:
+      - generic [ref=f3e37]: 
+      - table [ref=f3e39]:
+        - rowgroup [ref=f3e40]:
+          - row "企业编号/名称 签名内容 签名类型 审核状态 启用状态 审核意见 创建日期" [ref=f3e41]:
+            - columnheader [ref=f3e42]
+            - columnheader "企业编号/名称" [ref=f3e43]:
+              - generic [ref=f3e44]: 企业编号/名称
+            - columnheader "签名内容" [ref=f3e45]:
+              - generic [ref=f3e46]: 签名内容
+            - columnheader "签名类型" [ref=f3e47]:
+              - generic [ref=f3e48]: 签名类型
+            - columnheader "审核状态" [ref=f3e49]:
+              - generic [ref=f3e50]: 审核状态
+            - columnheader "启用状态" [ref=f3e51]:
+              - generic [ref=f3e52]: 启用状态
+            - columnheader "审核意见" [ref=f3e53]:
+              - generic [ref=f3e54]: 审核意见
+            - columnheader "创建日期" [ref=f3e55]:
+              - generic [ref=f3e56]: 创建日期
+      - generic [ref=f3e57]:
+        - table:
+          - rowgroup
+      - generic [ref=f3e59]: 

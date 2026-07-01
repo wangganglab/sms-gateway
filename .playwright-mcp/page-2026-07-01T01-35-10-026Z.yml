@@ -1,0 +1,13 @@
+- generic [active] [ref=e1]:
+  - banner [ref=e2]:
+    - generic [ref=e3]:
+      - generic [ref=e4]: 信速应 运营平台 V3.0-SNAPSHOT
+      - generic [ref=e5]: 欢迎登录 信速应 运营平台 V3.0-SNAPSHOT
+  - generic [ref=e9]:
+    - textbox "请输入用户名" [ref=e10]
+    - textbox "请输入密码" [ref=e11]
+    - textbox "请输入验证码" [ref=e12]
+    - img [ref=e14] [cursor=pointer]
+    - paragraph
+    - button "登录" [ref=e15]
+  - contentinfo [ref=e16]: 信速应

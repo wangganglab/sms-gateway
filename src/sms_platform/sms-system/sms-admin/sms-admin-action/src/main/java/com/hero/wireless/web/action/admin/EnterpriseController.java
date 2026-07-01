@@ -828,6 +828,102 @@ public class EnterpriseController extends BaseAdminController {
         return LayuiResultUtil.success();
     }
 
+    /**
+     * 短信签名列表查询
+     */
+    @RequestMapping("enterprise_smsSignatureList")
+    @ResponseBody
+    public String smsSignatureList(SmsSignatureExt smsSignatureExt) {
+        List<SmsSignature> smsSignatureLists = enterpriseManage.querySmsSignatureList(smsSignatureExt);
+        return new SmsUIObjectMapper().asSuccessString(smsSignatureLists, smsSignatureExt.getPagination());
+    }
+
+    /**
+     * 短信签名审核前置
+     */
+    @RequestMapping("enterprise_preCheckSmsSignature")
+    public String preCheckSmsSignature(@RequestParam(value = "ckIds") List<Integer> ckIds) {
+        SmsSignatureExt smsSignatureExt = new SmsSignatureExt();
+        smsSignatureExt.setId(ckIds.get(0));
+        List<SmsSignature> smsSignatureLists = enterpriseManage.querySmsSignatureList(smsSignatureExt);
+        if (smsSignatureLists == null || smsSignatureLists.isEmpty()) {
+            request.setAttribute("smsSignatureLists", smsSignatureLists);
+            return "/enterprise/sms_signature_check";
+        }
+        SmsSignature smsSignature = smsSignatureLists.get(0);
+        request.setAttribute("smsSignature", smsSignature);
+        return "/enterprise/sms_signature_check";
+    }
+
+    /**
+     * 短信签名审核 / 启停
+     */
+    @RequestMapping("enterprise_checkSmsSignature")
+    @ResponseBody
+    @OperateAnnotation(moduleName = "短信签名", option = "签名审核")
+    public LayUiJsonObjectFmt checkSmsSignature(SmsSignatureExt smsSignatureExt) {
+        this.enterpriseManage.updateSmsSignatureExt(smsSignatureExt);
+        return LayuiResultUtil.success();
+    }
+
+    /**
+     * 添加短信签名
+     */
+    @RequestMapping("enterprise_addSmsSignature")
+    @ResponseBody
+    @OperateAnnotation(moduleName = "短信签名", option = "添加签名")
+    @AvoidRepeatableCommitAnnotation(systemModuleName = ADMIN_PLATFORM + "admin_addSmsSignature")
+    public LayUiJsonObjectFmt addSmsSignature(SmsSignature smsSignature) {
+        try {
+            smsSignature.setApprove_Status(Constant.SMS_TEMPLAT_CHECK_STATUS_PENDING);
+            this.enterpriseManage.addSmsSignature(smsSignature);
+        } catch (ServiceException e) {
+            return LayuiResultUtil.fail(e.getMessage());
+        } catch (Exception e) {
+            return LayuiResultUtil.fail(e.getMessage());
+        }
+        return LayuiResultUtil.success();
+    }
+
+    /**
+     * 修改短信签名前置
+     */
+    @RequestMapping("enterprise_preSmsSignatureEdit")
+    public String preSmsSignatureEdit(BaseParamEntity entity) {
+        request.setAttribute("smsSignature", enterpriseManage.querySmsSignatureById(entity.getCkIds().get(0)));
+        return "/enterprise/sms_signature_edit";
+    }
+
+    /**
+     * 修改短信签名
+     */
+    @RequestMapping("enterprise_editSmsSignature")
+    @ResponseBody
+    @OperateAnnotation(moduleName = "短信签名", option = "编辑签名")
+    public LayUiJsonObjectFmt editSmsSignature(SmsSignature smsSignature) {
+        try {
+            this.enterpriseManage.editSmsSignature(smsSignature);
+        } catch (ServiceException e) {
+            return LayuiResultUtil.fail(e.getMessage());
+        }
+        return LayuiResultUtil.success();
+    }
+
+    /**
+     * 删除短信签名
+     */
+    @RequestMapping("enterprise_delSmsSignature")
+    @ResponseBody
+    @OperateAnnotation(moduleName = "短信签名", option = "删除签名")
+    public LayUiJsonObjectFmt delSmsSignature(BaseParamEntity entity) {
+        try {
+            this.enterpriseManage.deleteSmsSignature(entity.getCkIds());
+        } catch (ServiceException e) {
+            return LayuiResultUtil.fail(e.getMessage());
+        }
+        return LayuiResultUtil.success();
+    }
+
     //短信模板测试前置
     @RequestMapping("preTemplateTry2Try")
     public String preTemplateTry2Try(BaseParamEntity entity) {
