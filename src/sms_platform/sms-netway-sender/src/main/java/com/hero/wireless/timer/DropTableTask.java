@@ -48,6 +48,24 @@ public class DropTableTask extends OperatDataBase {
 		Date dropMonitorDate = DateTime.addDay(-deleteMonitorDay);
 		tableSuffix = DateTime.getString(dropMonitorDate, Y_M_D_2);
 		saveSystemLog("删除monitor分表" + tableSuffix, System.currentTimeMillis(), System.currentTimeMillis(), "");
+
+		// R3 时限清理:按 log_retention_months 清理日志分表(input_log/report/submit),合规日志留存
+		// 安全:Mapper 用 DROP TABLE IF EXISTS(删不存在表不报错);至少保留90天防配置误改误删
+		int logRetentionMonths = DatabaseCache.getIntValueBySortCodeAndCode(
+				"system_env", "log_retention_months", 12);
+		int logRetentionDays = Math.max(logRetentionMonths * 30, 90);
+		Date logRetentionDate = DateTime.addDay(-logRetentionDays);
+		String logTableSuffix = DateTime.getString(logRetentionDate, Y_M_D_2);
+		long r3Start = System.currentTimeMillis();
+		try {
+			tableDDLService.dropInputLogTable(logTableSuffix);
+			tableDDLService.dropReportTable(logTableSuffix);
+			tableDDLService.dropSubmitTable(logTableSuffix);
+			saveSystemLog("R3日志分表清理 input_log/report/submit@" + logTableSuffix, r3Start, System.currentTimeMillis(),
+					"log_retention_months=" + logRetentionMonths + "(约" + logRetentionDays + "天)");
+		} catch (Exception e) {
+			saveSystemLog("R3日志分表清理失败@" + logTableSuffix, r3Start, System.currentTimeMillis(), e.getMessage());
+		}
 	}
 
 }
