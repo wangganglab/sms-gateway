@@ -40,9 +40,19 @@
 - 后端仿签名管理全手写（非 v4.1 扩字段模式，因 cooperation_period 是新表）
 - 验证：mvn EXIT 0 + 3 实例部署 200 + 启动无 ERROR + 菜单 7 项入库 + 4 条测试数据就绪；Web 端到端点验待人工
 
+#### v4.3 号码台账（已交付，2026-07-02）
+- 完成态：管理员在「业务管理」下打开「号码台账」，查看/新增/编辑号码的码号类型、归属合作方、启用日期、详情
+- 做了：
+  - Product.java 加 4 字段（code_Type/enterprise_No/activate_Date/number_Detail）+ getter/setter
+  - ProductMapper.xml 9 处字段列表全改（保持 MBG 一致性）
+  - product_list.jsp 加 4 列（码号类型/归属合作方/启用日期/详情截断）
+  - product_edit.jsp + product_add.jsp 加 4 字段表单（码号类型 text + 归属合作方 `ht:heroenterpriseselect` + 启用日期 `fmt:formatDate` 回显 + laydate datetime + 详情 textarea）
+  - number_menu.sql：菜单 005009（业务管理下 Order=9）+ 6 子按钮（列表/新增前置+保存/编辑前置+保存）+ role 1/3/5 分配
+- 模式：仿 v4.1 enterprise 扩字段（不是 v4.2 独立 CRUD），Controller/Service 免改（productList/addProduct/preProductEdit/editProduct 通用）
+- 不做（进 vNext 候选池）：Enterprise_No → enterprise.Name 翻译、码号类型字典、到期预警
+- 验证：mvn EXIT 0 + 3 实例部署 200 + 启动无 ERROR + 菜单 6 项入库 + 3 条测试数据就绪；Web 冒烟点验通过
+
 ### vNext 候选池
-- v4.2 合作期限台账 + 到期预警（cooperation_period 表，复用 alarm）
-- v4.3 号码台账（product 扩字段）
 - v4.4 投诉处理（complaint 表）
 - v4.5 业务台账聚合视图
 - v4.6 R4-A 拒收识别（unsubscribe_log 表，上行 TD 等关键词）

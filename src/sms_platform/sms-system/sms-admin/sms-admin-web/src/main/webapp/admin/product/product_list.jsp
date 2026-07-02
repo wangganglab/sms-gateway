@@ -71,7 +71,15 @@
                 {title: '产品状态', minWidth: 200,templet: function(d){
                      return handleData(d.status_Code_name);
               	}},
-                {field: 'create_Date', title: '创建日期', width: 230},
+                , {field: 'code_Type', title: '码号类型', width: 120}
+                , {field: 'enterprise_No', title: '归属合作方', width: 150}
+                , {field: 'activate_Date', title: '启用日期', width: 130}
+                , {field: 'number_Detail', title: '详情', minWidth: 150, templet: function(d){
+                        var v = d.number_Detail;
+                        if (!v) return '---';
+                        return '<span title="' + v.replace(/"/g, '&quot;') + '">' + (v.length > 20 ? v.substring(0, 20) + '...' : v) + '</span>';
+                }}
+                , {field: 'create_Date', title: '创建日期', width: 230},
             ]]
         });
     });

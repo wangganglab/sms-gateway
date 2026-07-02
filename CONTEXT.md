@@ -82,7 +82,7 @@
 - ✅ 第1批 R2 操作员角色（2026-06-30）—— `operator_test/123456`，菜单白名单 4 项（账户/短信/报表/财务）
 - ✅ 第2批 R1 短信签名管理（2026-07-01）—— sms_signature 表 + CRUD + 菜单 006038 + 发送校验
 - 🔄 第3批 R3：时限清理定时任务 ✅（扩展 DropTableTask + code 表配置项）+ 管理员设置 ✅（复用 015003）；不可篡改(DB权限收紧) ⏸ 留人工门禁
-- 🔄 第4批 R5/R4-A：数据基础 ✅（3 新表 + enterprise 扩 6 字段/product 扩 4 字段）；**v4.1 合作方台账 ✅**（2026-07-01，enterprise 扩字段展示/录入+菜单 005007）；**v4.2 合作期限台账 ✅**（2026-07-01，独立 cooperation_period CRUD+菜单 005008+列表高亮+状态代替删除；合同附件留 vNext）；v4.3 号码台账 / v4.4 投诉 / v4.5 聚合视图 / v4.6 拒收识别 ⏭ 逐片交付（见 `docs/plan-r4-slices.md`）
+- 🔄 第4批 R5/R4-A：数据基础 ✅（3 新表 + enterprise 扩 6 字段/product 扩 4 字段）；**v4.1 合作方台账 ✅**（2026-07-01，enterprise 扩字段展示/录入+菜单 005007）；**v4.2 合作期限台账 ✅**（2026-07-01，独立 cooperation_period CRUD+菜单 005008+列表高亮+状态代替删除；合同附件留 vNext）；**v4.3 号码台账 ✅**（2026-07-02，product 扩 4 字段展示/录入+菜单 005009；仿 v4.1 模式 Controller/Service 免改）；v4.4 投诉 / v4.5 聚合视图 / v4.6 拒收识别 ⏭ 逐片交付（见 `docs/plan-r4-slices.md`）
 
 **本地开发工作流**：`sms-gateway/` git 仓库（main），源码基线在 `src/sms_platform/`，本地改 → `deploy-sms.sh` 部署。权限改动无需重启（实时查库）。
 

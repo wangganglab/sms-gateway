@@ -32,9 +32,41 @@
             <ht:herocustomdataselect dataSourceType="interceptStrategy" name="intercept_Strategy_Id" headerValue="-1" selected="${product.intercept_Strategy_Id}"/>
         </div>
     </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">码号类型</label>
+        <div class="layui-input-inline">
+            <input type="text" maxlength="64" name="code_Type" value="<c:out value="${product.code_Type}"/>" placeholder="请输入" autocomplete="off" class="layui-input"/>
+        </div>
+        <label class="layui-form-label">归属合作方</label>
+        <div class="layui-input-inline" style="width:300px;">
+            <ht:heroenterpriseselect name="enterprise_No" selected="${product.enterprise_No}"/>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">启用日期</label>
+        <div class="layui-input-inline">
+            <input type="text" name="activate_Date" id="activate_Date" value="<fmt:formatDate value="${product.activate_Date}" pattern="yyyy-MM-dd HH:mm:ss"/>" placeholder="请选择日期" autocomplete="off" class="layui-input"/>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">详情</label>
+        <div class="layui-input-block">
+            <textarea maxlength="1024" name="number_Detail" autocomplete="off" class="layui-textarea"><c:out value="${product.number_Detail}"/></textarea>
+        </div>
+    </div>
     <div class="layui-form-item layui-hide">
         <input type="submit" lay-submit lay-filter="submit" id="layuiadmin-app-form-submit" value="确认">
     </div>
 </form>
 <%@ include file="/admin/common/layui_bottom.jsp" %>
+<script>
+    layui.use(['laydate'], function(){
+        var laydate = layui.laydate;
+        laydate.render({
+            elem: '#activate_Date',
+            type: 'datetime',
+            trigger: 'click'
+        });
+    });
+</script>
 </body>
