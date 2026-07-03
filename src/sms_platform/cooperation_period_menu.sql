@@ -36,4 +36,7 @@ INSERT INTO admin_role_limit (Role_Id, Limit_Id, Create_Date)
 SELECT r.Role_Id, al.Id, NOW()
 FROM (SELECT 1 AS Role_Id UNION SELECT 3 UNION SELECT 5) r
 CROSS JOIN admin_limit al
-WHERE al.Code LIKE '005008%';
+WHERE al.Code LIKE '005008%'
+  AND NOT EXISTS (
+    SELECT 1 FROM admin_role_limit arl WHERE arl.Role_Id = r.Role_Id AND arl.Limit_Id = al.Id
+  );

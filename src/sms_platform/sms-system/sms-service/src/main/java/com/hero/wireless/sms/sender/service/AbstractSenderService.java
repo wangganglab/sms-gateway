@@ -10,6 +10,7 @@ import com.hero.wireless.web.dao.send.ext.IInputLogExtDAO;
 import com.hero.wireless.web.dao.send.ext.IReportExtDAO;
 import com.hero.wireless.web.dao.send.ext.IReportNotifyExtDAO;
 import com.hero.wireless.web.dao.send.ext.ISubmitExtDAO;
+import com.hero.wireless.web.dao.send.ext.IUnsubscribeLogExtDAO;
 import com.hero.wireless.web.entity.base.Pagination;
 import com.hero.wireless.web.entity.base.ShardingBatchInsert;
 import com.hero.wireless.web.entity.business.*;
@@ -73,6 +74,8 @@ public abstract class AbstractSenderService implements ISenderSmsService {
 	protected ISubmitAwaitDAO<SubmitAwait> submitAwaitDAO;
 	@Resource(name = "IReportNotifyAwaitDAO")
 	protected IReportNotifyAwaitDAO<ReportNotifyAwait> reportNotifyAwaitDAO;
+	@Resource(name = "unsubscribeLogExtDAO")
+	protected IUnsubscribeLogExtDAO unsubscribeLogExtDAO;
 
 
 	@Override
@@ -319,6 +322,22 @@ public abstract class AbstractSenderService implements ISenderSmsService {
 		String newPhone = phone.replaceFirst("\\+", "");;
 		if("86".equals(countryCode) && !StringUtils.startsWith(newPhone, "86")){
 			newPhone = inbox.getCountry_Code() + newPhone;
+		}
+
+		// v4.6 写入拒收记录（写入失败不影响主流程）
+		try {
+			UnsubscribeLog log = new UnsubscribeLog();
+			log.setEnterprise_No(inbox.getEnterprise_No());
+			log.setProduct_No("");  // Product_No 留空（简单方案，避免 join 查 channel）
+			log.setSub_Code(inbox.getSub_Code());
+			log.setPhone_No(newPhone);
+			log.setReject_Content(content);
+			log.setReject_Date(inbox.getCreate_Date() != null ? inbox.getCreate_Date() : new Date());
+			log.setInbox_Id(inbox.getId() != null ? inbox.getId().intValue() : null);
+			log.setCreate_Date(new Date());
+			unsubscribeLogExtDAO.insertSelective(log);
+		} catch (Exception e) {
+			SuperLogger.error("写入拒收记录失败: phone=" + newPhone + ", content=" + content, e);
 		}
 
 		boolean isAutoFilterBlack = DatabaseCache.isUserBlackSwitch(String.valueOf(inbox.getEnterprise_User_Id()));

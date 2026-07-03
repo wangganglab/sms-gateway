@@ -2,10 +2,13 @@ package com.hero.wireless.web.service;
 
 import com.hero.wireless.web.entity.business.*;
 import com.hero.wireless.web.entity.business.ext.*;
+import com.hero.wireless.web.entity.send.UnsubscribeLog;
+import com.hero.wireless.web.entity.send.ext.UnsubscribeLogExt;
 import com.hero.wireless.web.entity.ext.SqlStatisticsEntity;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 企业信息管理
@@ -463,5 +466,86 @@ public interface IEnterpriseManage {
 	 * @param id
 	 */
 	void terminateCooperationPeriod(Integer id);
+
+	/**
+	 * 投诉处理 v4.4
+	 * 查询投诉列表
+	 * @param condition
+	 * @return
+	 */
+	List<Complaint> queryComplaintList(ComplaintExt condition);
+
+	/**
+	 * 根据ID查询投诉
+	 * @param id
+	 * @return
+	 */
+	Complaint queryComplaintById(Integer id);
+
+	/**
+	 * 添加投诉
+	 * @param data
+	 * @return
+	 */
+	Complaint addComplaint(Complaint data);
+
+	/**
+	 * 修改投诉
+	 * @param data
+	 */
+	void editComplaint(ComplaintExt data);
+
+	/**
+	 * 处理投诉（更新状态/处理人/处理结果/处理时间）
+	 * @param data
+	 */
+	void handleComplaint(ComplaintExt data);
+
+	/**
+	 * 批量终止/删除投诉（预留）
+	 * @param ids
+	 */
+	void deleteComplaintBatch(List<Integer> ids);
+
+	/**
+	 * 拒收记录 v4.6
+	 * 查询拒收记录列表
+	 * @param condition
+	 * @return
+	 */
+	List<UnsubscribeLog> queryUnsubscribeLogList(UnsubscribeLogExt condition);
+
+	/**
+	 * 根据ID查询拒收记录
+	 * @param id
+	 * @return
+	 */
+	UnsubscribeLog queryUnsubscribeLogById(Long id);
+
+	/**
+	 * 投诉统计 v4.8
+	 * 按企业统计投诉数
+	 * @return Map<企业编号, 投诉数>
+	 */
+	Map<String, Integer> countComplaintByEnterprise();
+
+	/**
+	 * 按来源统计投诉数
+	 * @return Map<来源, 投诉数>
+	 */
+	Map<String, Integer> countComplaintBySource();
+
+	/**
+	 * 按状态统计投诉数
+	 * @return Map<状态, 投诉数>
+	 */
+	Map<String, Integer> countComplaintByStatus();
+
+	/**
+	 * 更新系统配置（code 表 system_env）
+	 * @param code 配置项 Code
+	 * @param value 配置项 Value
+	 */
+	void updateSystemEnvConfig(String code, String value);
 
 }

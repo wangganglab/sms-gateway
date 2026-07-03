@@ -9,6 +9,9 @@ import com.hero.wireless.web.config.SystemKey;
 import com.hero.wireless.web.entity.base.Pagination;
 import com.hero.wireless.web.entity.business.*;
 import com.hero.wireless.web.entity.business.ext.*;
+import com.hero.wireless.web.entity.send.UnsubscribeLog;
+import com.hero.wireless.web.entity.send.UnsubscribeLogExample;
+import com.hero.wireless.web.entity.send.ext.UnsubscribeLogExt;
 import com.hero.wireless.web.entity.ext.SqlStatisticsEntity;
 import com.hero.wireless.web.exception.BaseException;
 import com.hero.wireless.web.service.base.BaseEnterpriseManage;
@@ -28,7 +31,9 @@ import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Map;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
@@ -37,6 +42,9 @@ import static com.hero.wireless.web.config.MessagesManger.getSystemMessages;
 
 @Service("enterpriseManage")
 public class EnterpriseManageImpl extends BaseEnterpriseManage implements IEnterpriseManage {
+
+    @javax.annotation.Resource(name = "codeExtDAO")
+    private com.hero.wireless.web.dao.business.ext.ICodeExtDAO codeDAO;
 
     @Override
     public List<Enterprise> queryEnterpriseList(EnterpriseExt condition) {
@@ -51,6 +59,15 @@ public class EnterpriseManageImpl extends BaseEnterpriseManage implements IEnter
         List<Enterprise> enterprises = enterpriseDAO.selectByExample(enterpriseExample);
         if (enterprises != null && !enterprises.isEmpty()) {
             throw new ServiceException("该企业名称已被占用");
+        }
+        // 校验信用代码唯一性
+        if (StringUtils.isNotEmpty(data.getCredit_Code())) {
+            EnterpriseExample creditExample = new EnterpriseExample();
+            creditExample.createCriteria().andCredit_CodeEqualTo(data.getCredit_Code()).andStatusNotEqualTo(AccountStatus.DELETE.toString());
+            List<Enterprise> creditDuplicates = enterpriseDAO.selectByExample(creditExample);
+            if (creditDuplicates != null && !creditDuplicates.isEmpty()) {
+                throw new ServiceException("该信用代码已被使用");
+            }
         }
         if (StringUtils.isEmpty(data.getAgent_No())) {
             data.setAgent_No(SMSUtil.DEFAULT_NO);//设置默认代理商编号 0000000000000000
@@ -226,6 +243,16 @@ public class EnterpriseManageImpl extends BaseEnterpriseManage implements IEnter
     public Integer editEnterprise(EnterpriseExt enterpriseExt) throws Exception {
         if (StringUtils.isBlank(enterpriseExt.getAgent_No())) {
             enterpriseExt.setAgent_No(SMSUtil.DEFAULT_NO);//设置默认代理商编号 0000000000000000
+        }
+        // 校验信用代码唯一性（排除自己）
+        if (StringUtils.isNotEmpty(enterpriseExt.getCredit_Code())) {
+            EnterpriseExample creditExample = new EnterpriseExample();
+            creditExample.createCriteria().andCredit_CodeEqualTo(enterpriseExt.getCredit_Code())
+                .andIdNotEqualTo(enterpriseExt.getId()).andStatusNotEqualTo(AccountStatus.DELETE.toString());
+            List<Enterprise> creditDuplicates = enterpriseDAO.selectByExample(creditExample);
+            if (creditDuplicates != null && !creditDuplicates.isEmpty()) {
+                throw new ServiceException("该信用代码已被使用");
+            }
         }
         if (StringUtils.isNotBlank(enterpriseExt.getAuthentication_State_Code())) {
             enterpriseExt.setAuthentication_State_Code(enterpriseExt.getAuthentication_State_Code());
@@ -940,6 +967,16 @@ public class EnterpriseManageImpl extends BaseEnterpriseManage implements IEnter
                 throw new ServiceException("开始日期必须小于结束日期");
             }
         }
+        // 校验：企业资质是否过期
+        EnterpriseExample entExample = new EnterpriseExample();
+        entExample.createCriteria().andNoEqualTo(data.getEnterprise_No()).andStatusNotEqualTo(AccountStatus.DELETE.toString());
+        List<Enterprise> enterprises = enterpriseDAO.selectByExample(entExample);
+        if (enterprises != null && !enterprises.isEmpty()) {
+            Enterprise enterprise = enterprises.get(0);
+            if (enterprise.getQualification_Expiry_Date() != null && enterprise.getQualification_Expiry_Date().before(new Date())) {
+                throw new ServiceException("企业资质已过期，无法新增合作期限");
+            }
+        }
         data.setStatus_Code(StringUtils.isEmpty(data.getStatus_Code()) ? "1" : data.getStatus_Code());
         data.setCreate_Date(new Date());
         cooperationPeriodDAO.insert(data);
@@ -963,6 +1000,169 @@ public class EnterpriseManageImpl extends BaseEnterpriseManage implements IEnter
         record.setId(id);
         record.setStatus_Code("0"); // 终止
         cooperationPeriodDAO.updateByPrimaryKeySelective(record);
+    }
+
+    // ==================== 投诉处理 v4.4 ====================
+
+    @Override
+    public List<Complaint> queryComplaintList(ComplaintExt condition) {
+        ComplaintExample example = new ComplaintExample();
+        ComplaintExample.Criteria cri = example.createCriteria();
+        if (!StringUtils.isEmpty(condition.getEnterprise_No())) {
+            cri.andEnterprise_NoEqualTo(condition.getEnterprise_No());
+        }
+        if (!StringUtils.isEmpty(condition.getProduct_No())) {
+            cri.andProduct_NoLike("%" + condition.getProduct_No() + "%");
+        }
+        if (!StringUtils.isEmpty(condition.getPhone_No())) {
+            cri.andPhone_NoLike("%" + condition.getPhone_No() + "%");
+        }
+        if (!StringUtils.isEmpty(condition.getComplaint_Source())) {
+            cri.andComplaint_SourceEqualTo(condition.getComplaint_Source());
+        }
+        if (!StringUtils.isEmpty(condition.getHandle_Status())) {
+            cri.andHandle_StatusEqualTo(condition.getHandle_Status());
+        }
+        if (condition.getId() != null) {
+            cri.andIdEqualTo(condition.getId());
+        }
+        example.setPagination(condition.getPagination());
+        example.setOrderByClause(" id desc ");
+        return complaintExtDAO.selectByExamplePage(example);
+    }
+
+    @Override
+    public Complaint queryComplaintById(Integer id) {
+        return complaintExtDAO.selectByPrimaryKey(id);
+    }
+
+    @Override
+    public Complaint addComplaint(Complaint data) {
+        // 校验：企业编号必填
+        if (StringUtils.isEmpty(data.getEnterprise_No())) {
+            throw new ServiceException("企业编号不能为空");
+        }
+        // 校验：投诉号码必填
+        if (StringUtils.isEmpty(data.getPhone_No())) {
+            throw new ServiceException("投诉号码不能为空");
+        }
+        // 校验：投诉内容必填
+        if (StringUtils.isEmpty(data.getComplaint_Content())) {
+            throw new ServiceException("投诉内容不能为空");
+        }
+        data.setHandle_Status(StringUtils.isEmpty(data.getHandle_Status()) ? "0" : data.getHandle_Status());
+        data.setCreate_Date(new Date());
+        complaintExtDAO.insert(data);
+        return data;
+    }
+
+    @Override
+    public void editComplaint(ComplaintExt data) {
+        complaintExtDAO.updateByPrimaryKeySelective(data);
+    }
+
+    @Override
+    public void handleComplaint(ComplaintExt data) {
+        if (data.getId() == null) {
+            throw new ServiceException("投诉ID不能为空");
+        }
+        // 处理投诉：更新状态/处理人/处理结果/处理时间
+        Complaint record = new Complaint();
+        record.setId(data.getId());
+        record.setHandle_Status(StringUtils.isEmpty(data.getHandle_Status()) ? "1" : data.getHandle_Status());
+        record.setHandle_User_Id(data.getHandle_User_Id());
+        record.setHandle_Result(data.getHandle_Result());
+        record.setHandle_Date(data.getHandle_Date() != null ? data.getHandle_Date() : new Date());
+        complaintExtDAO.updateByPrimaryKeySelective(record);
+    }
+
+    @Override
+    public void deleteComplaintBatch(List<Integer> ids) {
+        if (ids == null || ids.isEmpty()) {
+            return;
+        }
+        ComplaintExample example = new ComplaintExample();
+        example.createCriteria().andIdIn(ids);
+        complaintExtDAO.deleteByExample(example);
+    }
+
+    // ==================== 投诉统计 v4.8 ====================
+
+    @Override
+    public Map<String, Integer> countComplaintByEnterprise() {
+        List<Complaint> allComplaints = complaintExtDAO.selectByExample(new ComplaintExample());
+        Map<String, Integer> result = new HashMap<>();
+        for (Complaint c : allComplaints) {
+            String key = StringUtils.isEmpty(c.getEnterprise_No()) ? "未知" : c.getEnterprise_No();
+            result.put(key, result.getOrDefault(key, 0) + 1);
+        }
+        return result;
+    }
+
+    @Override
+    public Map<String, Integer> countComplaintBySource() {
+        List<Complaint> allComplaints = complaintExtDAO.selectByExample(new ComplaintExample());
+        Map<String, Integer> result = new HashMap<>();
+        for (Complaint c : allComplaints) {
+            String key = StringUtils.isEmpty(c.getComplaint_Source()) ? "未知" : c.getComplaint_Source();
+            result.put(key, result.getOrDefault(key, 0) + 1);
+        }
+        return result;
+    }
+
+    @Override
+    public Map<String, Integer> countComplaintByStatus() {
+        List<Complaint> allComplaints = complaintExtDAO.selectByExample(new ComplaintExample());
+        Map<String, Integer> result = new HashMap<>();
+        for (Complaint c : allComplaints) {
+            String key = StringUtils.isEmpty(c.getHandle_Status()) ? "未知" : c.getHandle_Status();
+            result.put(key, result.getOrDefault(key, 0) + 1);
+        }
+        return result;
+    }
+
+    // ==================== 系统配置 v4.9 ====================
+
+    @Override
+    public void updateSystemEnvConfig(String code, String value) {
+        CodeExample example = new CodeExample();
+        example.createCriteria().andSort_CodeEqualTo("system_env").andCodeEqualTo(code);
+        List<Code> configs = codeDAO.selectByExample(example);
+        if (configs != null && !configs.isEmpty()) {
+            Code record = configs.get(0);
+            record.setValue(value);
+            codeDAO.updateByPrimaryKeySelective(record);
+        } else {
+            throw new ServiceException("配置项不存在：" + code);
+        }
+    }
+
+    // ==================== 拒收记录 v4.6 ====================
+
+    @Override
+    public List<UnsubscribeLog> queryUnsubscribeLogList(UnsubscribeLogExt condition) {
+        UnsubscribeLogExample example = new UnsubscribeLogExample();
+        UnsubscribeLogExample.Criteria cri = example.createCriteria();
+        if (!StringUtils.isEmpty(condition.getEnterprise_No())) {
+            cri.andEnterprise_NoEqualTo(condition.getEnterprise_No());
+        }
+        if (!StringUtils.isEmpty(condition.getProduct_No())) {
+            cri.andProduct_NoLike("%" + condition.getProduct_No() + "%");
+        }
+        if (!StringUtils.isEmpty(condition.getPhone_No())) {
+            cri.andPhone_NoLike("%" + condition.getPhone_No() + "%");
+        }
+        if (condition.getId() != null) {
+            cri.andIdEqualTo(condition.getId());
+        }
+        example.setPagination(condition.getPagination());
+        example.setOrderByClause(" id desc ");
+        return unsubscribeLogExtDAO.selectByExamplePage(example);
+    }
+
+    @Override
+    public UnsubscribeLog queryUnsubscribeLogById(Long id) {
+        return unsubscribeLogExtDAO.selectByPrimaryKey(id);
     }
 
     private String getPlainPassword(String encryptPassword) {

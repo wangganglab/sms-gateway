@@ -15,6 +15,8 @@ import com.hero.wireless.web.config.DatabaseCache;
 import com.hero.wireless.web.entity.business.Properties;
 import com.hero.wireless.web.entity.business.*;
 import com.hero.wireless.web.entity.business.ext.*;
+import com.hero.wireless.web.entity.send.UnsubscribeLog;
+import com.hero.wireless.web.entity.send.ext.UnsubscribeLogExt;
 import com.hero.wireless.web.entity.ext.SqlStatisticsEntity;
 import com.hero.wireless.web.exception.BaseException;
 import com.hero.wireless.web.service.IEnterpriseManage;
@@ -1209,6 +1211,185 @@ public class EnterpriseController extends BaseAdminController {
             return LayuiResultUtil.fail(e.getMessage());
         }
         return LayuiResultUtil.success();
+    }
+
+    // ==================== 投诉处理 v4.4 ====================
+
+    /**
+     * 投诉列表
+     */
+    @RequestMapping("enterprise_complaintList")
+    @ResponseBody
+    public String complaintList(ComplaintExt condition) {
+        List<Complaint> list = enterpriseManage.queryComplaintList(condition);
+        return new SmsUIObjectMapper().asSuccessString(list, condition.getPagination());
+    }
+
+    /**
+     * 新增投诉前置
+     */
+    @RequestMapping("enterprise_preAddComplaint")
+    public String preAddComplaint() {
+        return "/enterprise/complaint_add";
+    }
+
+    /**
+     * 新增投诉
+     */
+    @RequestMapping("enterprise_addComplaint")
+    @ResponseBody
+    public LayUiJsonObjectFmt addComplaint(Complaint data) {
+        try {
+            enterpriseManage.addComplaint(data);
+        } catch (Exception e) {
+            return LayuiResultUtil.fail(e.getMessage());
+        }
+        return LayuiResultUtil.success();
+    }
+
+    /**
+     * 编辑投诉前置
+     */
+    @RequestMapping("enterprise_preComplaintEdit")
+    public String preComplaintEdit(BaseParamEntity entity) {
+        if (entity.getCkIds() == null || entity.getCkIds().size() > 1) {
+            throw new ServiceException("id is not null");
+        }
+        Complaint data = enterpriseManage.queryComplaintById(entity.getCkIds().get(0));
+        request.setAttribute("cptBean", data);
+        return "/enterprise/complaint_edit";
+    }
+
+    /**
+     * 编辑投诉
+     */
+    @RequestMapping("enterprise_editComplaint")
+    @ResponseBody
+    public LayUiJsonObjectFmt editComplaint(ComplaintExt data) throws Exception {
+        enterpriseManage.editComplaint(data);
+        return LayuiResultUtil.success();
+    }
+
+    /**
+     * 处理投诉前置
+     */
+    @RequestMapping("enterprise_preComplaintHandle")
+    public String preComplaintHandle(BaseParamEntity entity) {
+        if (entity.getCkIds() == null || entity.getCkIds().size() > 1) {
+            throw new ServiceException("id is not null");
+        }
+        Complaint data = enterpriseManage.queryComplaintById(entity.getCkIds().get(0));
+        request.setAttribute("cptBean", data);
+        return "/enterprise/complaint_handle";
+    }
+
+    /**
+     * 处理投诉保存
+     */
+    @RequestMapping("enterprise_handleComplaint")
+    @ResponseBody
+    public LayUiJsonObjectFmt handleComplaint(ComplaintExt data) throws Exception {
+        try {
+            enterpriseManage.handleComplaint(data);
+        } catch (Exception e) {
+            return LayuiResultUtil.fail(e.getMessage());
+        }
+        return LayuiResultUtil.success();
+    }
+
+    /**
+     * 查看投诉详情前置
+     */
+    @RequestMapping("enterprise_preComplaintDetail")
+    public String preComplaintDetail(BaseParamEntity entity) {
+        if (entity.getCkIds() == null || entity.getCkIds().size() > 1) {
+            throw new ServiceException("id is not null");
+        }
+        Complaint data = enterpriseManage.queryComplaintById(entity.getCkIds().get(0));
+        request.setAttribute("cptBean", data);
+        return "/enterprise/complaint_detail";
+    }
+
+    // ==================== 拒收记录 v4.6 ====================
+
+    /**
+     * 拒收记录列表
+     */
+    @RequestMapping("enterprise_unsubscribeLogList")
+    @ResponseBody
+    public String unsubscribeLogList(UnsubscribeLogExt condition) {
+        List<UnsubscribeLog> list = enterpriseManage.queryUnsubscribeLogList(condition);
+        return new SmsUIObjectMapper().asSuccessString(list, condition.getPagination());
+    }
+
+    /**
+     * 查看拒收详情前置
+     */
+    @RequestMapping("enterprise_preUnsubscribeLogDetail")
+    public String preUnsubscribeLogDetail(BaseParamEntity entity) {
+        if (entity.getCkIds() == null || entity.getCkIds().size() > 1) {
+            throw new ServiceException("id is not null");
+        }
+        Long id = entity.getCkIds().get(0).longValue();
+        UnsubscribeLog data = enterpriseManage.queryUnsubscribeLogById(id);
+        request.setAttribute("unsubBean", data);
+        return "/enterprise/unsubscribe_log_detail";
+    }
+
+    // ==================== 投诉统计 v4.8 ====================
+
+    /**
+     * 投诉统计页面
+     */
+    @RequestMapping("enterprise_complaintStatistics")
+    public String complaintStatistics() {
+        return "/enterprise/complaint_statistics";
+    }
+
+    /**
+     * 投诉统计数据接口（JSON）
+     */
+    @RequestMapping("enterprise_complaintStatisticsData")
+    @ResponseBody
+    public String complaintStatisticsData() {
+        Map<String, Object> result = new HashMap<>();
+        result.put("code", 0);
+        result.put("byEnterprise", enterpriseManage.countComplaintByEnterprise());
+        result.put("bySource", enterpriseManage.countComplaintBySource());
+        result.put("byStatus", enterpriseManage.countComplaintByStatus());
+        return com.alibaba.fastjson.JSONObject.toJSONString(result);
+    }
+
+    // ==================== 拒收关键词配置 v4.9 ====================
+
+    /**
+     * 拒收关键词配置页面
+     */
+    @RequestMapping("enterprise_unsubscribeConfig")
+    public String unsubscribeConfig() {
+        String keywords = DatabaseCache.getStringValueBySystemEnvAndCode("unsubscribe", "T,TD,退订");
+        request.setAttribute("keywords", keywords);
+        return "/enterprise/unsubscribe_config";
+    }
+
+    /**
+     * 保存拒收关键词配置
+     */
+    @RequestMapping("enterprise_saveUnsubscribeConfig")
+    @ResponseBody
+    public LayUiJsonObjectFmt saveUnsubscribeConfig(@RequestParam("unsubscribe_keywords") String keywords) {
+        try {
+            if (keywords == null || keywords.trim().isEmpty()) {
+                return LayuiResultUtil.fail("关键词不能为空");
+            }
+            // 更新 code 表
+            enterpriseManage.updateSystemEnvConfig("unsubscribe", keywords.trim());
+            return LayuiResultUtil.success();
+        } catch (Exception e) {
+            // 记录完整异常到日志，不暴露给客户端
+            com.drondea.wireless.util.SuperLogger.error("保存拒收关键词配置失败: " + keywords, e);
+            return LayuiResultUtil.fail("保存配置失败，请稍后重试");
+        }
     }
 
 }

@@ -15,10 +15,15 @@ import com.hero.wireless.web.dao.business.ext.IEnterpriseExtDAO;
 import com.hero.wireless.web.dao.business.ext.IEnterpriseLimitExtDAO;
 import com.hero.wireless.web.dao.business.ext.IEnterpriseRoleExtDAO;
 import com.hero.wireless.web.dao.business.ext.IEnterpriseUserExtDAO;
+import com.hero.wireless.web.dao.business.ext.IComplaintExtDAO;
+import com.hero.wireless.web.dao.send.ext.IUnsubscribeLogExtDAO;
 import com.hero.wireless.web.entity.business.*;
 import com.hero.wireless.web.entity.business.ext.EnterpriseExt;
 import com.hero.wireless.web.entity.business.ext.EnterpriseUserExt;
 import com.hero.wireless.web.entity.business.ext.ExportFileExt;
+import com.hero.wireless.web.entity.business.ext.ComplaintExt;
+import com.hero.wireless.web.entity.send.UnsubscribeLog;
+import com.hero.wireless.web.entity.send.ext.UnsubscribeLogExt;
 import com.hero.wireless.web.util.ChannelUtil.LimitRepeat;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.ObjectUtils;
@@ -68,6 +73,10 @@ public class BaseEnterpriseManage extends BaseService {
     protected IPropertiesDAO<Properties> propertiesDAO;
 	@Resource(name = "ICooperationPeriodDAO")
 	protected ICooperationPeriodDAO<CooperationPeriod> cooperationPeriodDAO;
+	@Resource(name = "complaintExtDAO")
+	protected IComplaintExtDAO complaintExtDAO;
+	@Resource(name = "unsubscribeLogExtDAO")
+	protected IUnsubscribeLogExtDAO unsubscribeLogExtDAO;
 
 	protected void doCheckUserName(EnterpriseUserExt userInfo) {
 		EnterpriseUserExample example = new EnterpriseUserExample();

@@ -1,0 +1,378 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hero.wireless.web.dao.business.IComplaintDAO">
+  <resultMap id="BaseResultMap" type="com.hero.wireless.web.entity.business.Complaint">
+    <id column="Id" jdbcType="INTEGER" property="id" />
+    <result column="Enterprise_No" jdbcType="VARCHAR" property="enterprise_No" />
+    <result column="Product_No" jdbcType="VARCHAR" property="product_No" />
+    <result column="Sub_Code" jdbcType="VARCHAR" property="sub_Code" />
+    <result column="Phone_No" jdbcType="VARCHAR" property="phone_No" />
+    <result column="Complaint_Content" jdbcType="VARCHAR" property="complaint_Content" />
+    <result column="Complaint_Source" jdbcType="VARCHAR" property="complaint_Source" />
+    <result column="Complaint_Date" jdbcType="TIMESTAMP" property="complaint_Date" />
+    <result column="Handle_Status" jdbcType="VARCHAR" property="handle_Status" />
+    <result column="Handle_User_Id" jdbcType="INTEGER" property="handle_User_Id" />
+    <result column="Handle_Result" jdbcType="VARCHAR" property="handle_Result" />
+    <result column="Handle_Date" jdbcType="TIMESTAMP" property="handle_Date" />
+    <result column="Create_Date" jdbcType="TIMESTAMP" property="create_Date" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    Id, Enterprise_No, Product_No, Sub_Code, Phone_No, Complaint_Content, Complaint_Source,
+    Complaint_Date, Handle_Status, Handle_User_Id, Handle_Result, Handle_Date, Create_Date
+  </sql>
+  <select id="selectByExample" parameterType="com.hero.wireless.web.entity.business.ComplaintExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    'true' as QUERYID,
+    <include refid="Base_Column_List" />
+    from complaint
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+    <if test="pagination != null">
+      limit ${pagination.firstResult},${pagination.pageSize}
+    </if>
+    <if test="dataLock != null">
+       ${dataLock}
+    </if>
+  </select>
+  <select id="selectByExamplePage" parameterType="com.hero.wireless.web.entity.business.ComplaintExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    'true' as QUERYID,
+    <include refid="Base_Column_List" />
+    from complaint
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+    <if test="pagination != null">
+      limit ${pagination.firstResult},${pagination.pageSize}
+    </if>
+    <if test="dataLock != null">
+       ${dataLock}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from complaint
+    where Id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from complaint
+    where Id = #{id,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.hero.wireless.web.entity.business.ComplaintExample">
+    delete from complaint
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.hero.wireless.web.entity.business.Complaint">
+    insert into complaint (Id, Enterprise_No, Product_No, Sub_Code, Phone_No, Complaint_Content,
+      Complaint_Source, Complaint_Date, Handle_Status, Handle_User_Id, Handle_Result, Handle_Date, Create_Date)
+    values (#{id,jdbcType=INTEGER}, #{enterprise_No,jdbcType=VARCHAR}, #{product_No,jdbcType=VARCHAR},
+      #{sub_Code,jdbcType=VARCHAR}, #{phone_No,jdbcType=VARCHAR}, #{complaint_Content,jdbcType=VARCHAR},
+      #{complaint_Source,jdbcType=VARCHAR}, #{complaint_Date,jdbcType=TIMESTAMP}, #{handle_Status,jdbcType=VARCHAR},
+      #{handle_User_Id,jdbcType=INTEGER}, #{handle_Result,jdbcType=VARCHAR}, #{handle_Date,jdbcType=TIMESTAMP},
+      #{create_Date,jdbcType=TIMESTAMP})
+    <selectKey keyProperty="id" resultType="Integer">
+      SELECT LAST_INSERT_ID() AS Id
+    </selectKey>
+  </insert>
+  <insert id="insertList" keyColumn="Id" keyProperty="id" parameterType="java.util.List" useGeneratedKeys="true">
+    insert into complaint (Id, Enterprise_No, Product_No, Sub_Code, Phone_No, Complaint_Content,
+      Complaint_Source, Complaint_Date, Handle_Status, Handle_User_Id, Handle_Result, Handle_Date, Create_Date)
+    values
+    <foreach collection="list" item="item" separator=",">
+      (#{item.id,jdbcType=INTEGER}, #{item.enterprise_No,jdbcType=VARCHAR}, #{item.product_No,jdbcType=VARCHAR},
+       #{item.sub_Code,jdbcType=VARCHAR}, #{item.phone_No,jdbcType=VARCHAR}, #{item.complaint_Content,jdbcType=VARCHAR},
+       #{item.complaint_Source,jdbcType=VARCHAR}, #{item.complaint_Date,jdbcType=TIMESTAMP}, #{item.handle_Status,jdbcType=VARCHAR},
+       #{item.handle_User_Id,jdbcType=INTEGER}, #{item.handle_Result,jdbcType=VARCHAR}, #{item.handle_Date,jdbcType=TIMESTAMP},
+       #{item.create_Date,jdbcType=TIMESTAMP})
+    </foreach>
+  </insert>
+  <insert id="insertSelective" parameterType="com.hero.wireless.web.entity.business.Complaint">
+    insert into complaint
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        Id,
+      </if>
+      <if test="enterprise_No != null">
+        Enterprise_No,
+      </if>
+      <if test="product_No != null">
+        Product_No,
+      </if>
+      <if test="sub_Code != null">
+        Sub_Code,
+      </if>
+      <if test="phone_No != null">
+        Phone_No,
+      </if>
+      <if test="complaint_Content != null">
+        Complaint_Content,
+      </if>
+      <if test="complaint_Source != null">
+        Complaint_Source,
+      </if>
+      <if test="complaint_Date != null">
+        Complaint_Date,
+      </if>
+      <if test="handle_Status != null">
+        Handle_Status,
+      </if>
+      <if test="handle_User_Id != null">
+        Handle_User_Id,
+      </if>
+      <if test="handle_Result != null">
+        Handle_Result,
+      </if>
+      <if test="handle_Date != null">
+        Handle_Date,
+      </if>
+      <if test="create_Date != null">
+        Create_Date,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="enterprise_No != null">
+        #{enterprise_No,jdbcType=VARCHAR},
+      </if>
+      <if test="product_No != null">
+        #{product_No,jdbcType=VARCHAR},
+      </if>
+      <if test="sub_Code != null">
+        #{sub_Code,jdbcType=VARCHAR},
+      </if>
+      <if test="phone_No != null">
+        #{phone_No,jdbcType=VARCHAR},
+      </if>
+      <if test="complaint_Content != null">
+        #{complaint_Content,jdbcType=VARCHAR},
+      </if>
+      <if test="complaint_Source != null">
+        #{complaint_Source,jdbcType=VARCHAR},
+      </if>
+      <if test="complaint_Date != null">
+        #{complaint_Date,jdbcType=TIMESTAMP},
+      </if>
+      <if test="handle_Status != null">
+        #{handle_Status,jdbcType=VARCHAR},
+      </if>
+      <if test="handle_User_Id != null">
+        #{handle_User_Id,jdbcType=INTEGER},
+      </if>
+      <if test="handle_Result != null">
+        #{handle_Result,jdbcType=VARCHAR},
+      </if>
+      <if test="handle_Date != null">
+        #{handle_Date,jdbcType=TIMESTAMP},
+      </if>
+      <if test="create_Date != null">
+        #{create_Date,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.hero.wireless.web.entity.business.ComplaintExample" resultType="java.lang.Integer">
+    select count(*) from complaint
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update complaint
+    <set>
+      <if test="record.id != null">
+        Id = #{record.id,jdbcType=INTEGER},
+      </if>
+      <if test="record.enterprise_No != null">
+        Enterprise_No = #{record.enterprise_No,jdbcType=VARCHAR},
+      </if>
+      <if test="record.product_No != null">
+        Product_No = #{record.product_No,jdbcType=VARCHAR},
+      </if>
+      <if test="record.sub_Code != null">
+        Sub_Code = #{record.sub_Code,jdbcType=VARCHAR},
+      </if>
+      <if test="record.phone_No != null">
+        Phone_No = #{record.phone_No,jdbcType=VARCHAR},
+      </if>
+      <if test="record.complaint_Content != null">
+        Complaint_Content = #{record.complaint_Content,jdbcType=VARCHAR},
+      </if>
+      <if test="record.complaint_Source != null">
+        Complaint_Source = #{record.complaint_Source,jdbcType=VARCHAR},
+      </if>
+      <if test="record.complaint_Date != null">
+        Complaint_Date = #{record.complaint_Date,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.handle_Status != null">
+        Handle_Status = #{record.handle_Status,jdbcType=VARCHAR},
+      </if>
+      <if test="record.handle_User_Id != null">
+        Handle_User_Id = #{record.handle_User_Id,jdbcType=INTEGER},
+      </if>
+      <if test="record.handle_Result != null">
+        Handle_Result = #{record.handle_Result,jdbcType=VARCHAR},
+      </if>
+      <if test="record.handle_Date != null">
+        Handle_Date = #{record.handle_Date,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.create_Date != null">
+        Create_Date = #{record.create_Date,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update complaint
+    set Id = #{record.id,jdbcType=INTEGER},
+      Enterprise_No = #{record.enterprise_No,jdbcType=VARCHAR},
+      Product_No = #{record.product_No,jdbcType=VARCHAR},
+      Sub_Code = #{record.sub_Code,jdbcType=VARCHAR},
+      Phone_No = #{record.phone_No,jdbcType=VARCHAR},
+      Complaint_Content = #{record.complaint_Content,jdbcType=VARCHAR},
+      Complaint_Source = #{record.complaint_Source,jdbcType=VARCHAR},
+      Complaint_Date = #{record.complaint_Date,jdbcType=TIMESTAMP},
+      Handle_Status = #{record.handle_Status,jdbcType=VARCHAR},
+      Handle_User_Id = #{record.handle_User_Id,jdbcType=INTEGER},
+      Handle_Result = #{record.handle_Result,jdbcType=VARCHAR},
+      Handle_Date = #{record.handle_Date,jdbcType=TIMESTAMP},
+      Create_Date = #{record.create_Date,jdbcType=TIMESTAMP}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.hero.wireless.web.entity.business.Complaint">
+    update complaint
+    <set>
+      <if test="enterprise_No != null">
+        Enterprise_No = #{enterprise_No,jdbcType=VARCHAR},
+      </if>
+      <if test="product_No != null">
+        Product_No = #{product_No,jdbcType=VARCHAR},
+      </if>
+      <if test="sub_Code != null">
+        Sub_Code = #{sub_Code,jdbcType=VARCHAR},
+      </if>
+      <if test="phone_No != null">
+        Phone_No = #{phone_No,jdbcType=VARCHAR},
+      </if>
+      <if test="complaint_Content != null">
+        Complaint_Content = #{complaint_Content,jdbcType=VARCHAR},
+      </if>
+      <if test="complaint_Source != null">
+        Complaint_Source = #{complaint_Source,jdbcType=VARCHAR},
+      </if>
+      <if test="complaint_Date != null">
+        Complaint_Date = #{complaint_Date,jdbcType=TIMESTAMP},
+      </if>
+      <if test="handle_Status != null">
+        Handle_Status = #{handle_Status,jdbcType=VARCHAR},
+      </if>
+      <if test="handle_User_Id != null">
+        Handle_User_Id = #{handle_User_Id,jdbcType=INTEGER},
+      </if>
+      <if test="handle_Result != null">
+        Handle_Result = #{handle_Result,jdbcType=VARCHAR},
+      </if>
+      <if test="handle_Date != null">
+        Handle_Date = #{handle_Date,jdbcType=TIMESTAMP},
+      </if>
+      <if test="create_Date != null">
+        Create_Date = #{create_Date,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where Id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.hero.wireless.web.entity.business.Complaint">
+    update complaint
+    set Enterprise_No = #{enterprise_No,jdbcType=VARCHAR},
+      Product_No = #{product_No,jdbcType=VARCHAR},
+      Sub_Code = #{sub_Code,jdbcType=VARCHAR},
+      Phone_No = #{phone_No,jdbcType=VARCHAR},
+      Complaint_Content = #{complaint_Content,jdbcType=VARCHAR},
+      Complaint_Source = #{complaint_Source,jdbcType=VARCHAR},
+      Complaint_Date = #{complaint_Date,jdbcType=TIMESTAMP},
+      Handle_Status = #{handle_Status,jdbcType=VARCHAR},
+      Handle_User_Id = #{handle_User_Id,jdbcType=INTEGER},
+      Handle_Result = #{handle_Result,jdbcType=VARCHAR},
+      Handle_Date = #{handle_Date,jdbcType=TIMESTAMP},
+      Create_Date = #{create_Date,jdbcType=TIMESTAMP}
+    where Id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

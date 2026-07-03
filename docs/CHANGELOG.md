@@ -52,11 +52,74 @@
 - 不做（进 vNext 候选池）：Enterprise_No → enterprise.Name 翻译、码号类型字典、到期预警
 - 验证：mvn EXIT 0 + 3 实例部署 200 + 启动无 ERROR + 菜单 6 项入库 + 3 条测试数据就绪；Web 冒烟点验通过
 
+#### v4.4 投诉处理（已交付，2026-07-02）
+- 完成态：管理员在「业务管理」下打开「投诉处理」，登记/处理/查询投诉，跟踪处理状态（待处理→处理中→已处理）
+- 做了：
+  - Complaint 全套（Entity/Example/Mapper/DAO 三件套/Ext Entity+DAO 空壳）仿 CooperationPeriod 模式
+  - IEnterpriseManage 加 6 方法（queryComplaintList/queryComplaintById/addComplaint/editComplaint/handleComplaint/deleteComplaintBatch）
+  - EnterpriseManageImpl 实现 6 方法（含必填校验：企业/号码/内容；处理时自动更新 handle_Date）
+  - BaseEnterpriseManage 注入 complaintExtDAO
+  - EnterpriseController 加 7 方法（list/preAdd/add/preEdit/edit/preHandle/handle/preDetail）
+  - 5 个 JSP：complaint_list.jsp（5 筛选+状态高亮 templet）+ complaint_add.jsp（必填*+来源字典+时间 laydate）+ complaint_edit.jsp（全部字段可改）+ complaint_handle.jsp（处理专属，投诉信息只读+处理状态/人/结果/时间可编辑）+ complaint_detail.jsp（只读详情）
+  - complaint_menu.sql：code 字典 complaintStatus(0 待处理/1 处理中/2 已处理)+ complaintSource(operator 运营商/user 用户/regulator 监管) + 菜单 005010（Order=10）+ 9 子项（1 列表 button + 4 操作 showbutton + 4 保存 button）+ role 1/3/5 分配（27 条 admin_role_limit）
+- 不做（进 vNext 候选池）：投诉统计报表、自动预警、附件上传、投诉分类字典细化、不可篡改审计日志
+- 测试数据：5 条投诉（覆盖 3 状态 × 3 来源 × 不同企业/端口）
+- 验证：mvn EXIT 0 + 3 实例部署 0 ERROR + 菜单 9 项入库 + 字典 6 项入库 + 角色 27 条分配 + 5 条测试数据就绪 + JSP 5 文件部署到 Tomcat；Web 端到端点验待人工
+
+#### v4.6 拒收识别（已交付，2026-07-02）
+- 完成态：上行短信含 T/TD/退订 关键词时，自动识别拒收并写入 `sms_send.unsubscribe_log` 表（同时保持现有 black_list 逻辑）；管理员在「业务管理」→「拒收记录」查看列表/详情
+- 做了：
+  - UnsubscribeLog 全套（sms-send-dao 模块，因表在 sms_send 库）：Entity(bigInteger Id)/Example/Mapper/DAO + Ext 三件套
+  - 修改 AbstractSenderService.autoAddBlack：识别到拒收时先写 unsubscribe_log（try/catch 包裹，失败不影响主流程），再走原 black_list 逻辑
+  - 注入 unsubscribeLogExtDAO（@Resource）
+  - IEnterpriseManage 加 2 方法（queryUnsubscribeLogList/queryUnsubscribeLogById）
+  - EnterpriseManageImpl 实现 2 方法（企业/端口/号码筛选，id desc 排序）
+  - BaseEnterpriseManage 注入 unsubscribeLogExtDAO
+  - EnterpriseController 加 2 方法（list/detail）
+  - 2 个 JSP：unsubscribe_log_list.jsp（3 筛选 + 表格）+ unsubscribe_log_detail.jsp（只读 8 字段）
+  - unsubscribe_log_menu.sql：菜单 005011（Order=11）+ 3 子项（列表 button + 详情 showbutton）+ role 1/3/5 分配（9 条 admin_role_limit）
+- 关键决策：
+  - Product_No 留空（避免 join 查 channel，简单方案优先；后续需要再补）
+  - 企业未绑定端口的拒收不记录（保持 saveMO 现状，enterprise_user_id==0 直接返回）
+  - 拒收关键词用 DatabaseCache 默认值 "T,TD,退订"（system_env 表不存在，无需数据库配置）
+  - **无企业级访问控制**（admin 平台操作员需查看全量数据做合规审计；如未来扩展到 enterprise 平台需加 enterprise_No 过滤）
+- 不做（进 vNext）：拒收关键词动态配置 UI、拒撤恢复/二次发送、导出 Excel、图表
+- 测试数据：5 条拒收记录（sms_send.unsubscribe_log，覆盖 T/TD/退订 三种关键词 × 不同企业）
+- 验证：mvn EXIT 0 + 3 实例重启 0 ERROR + 菜单 3 项入库 + 角色 9 条分配 + 5 条测试数据就绪 + JSP 2 文件部署；Web 端到端点验待人工
+- 踩坑：僵尸进程堆积（多次 deploy 未停干净），`bash /tools/restart-sms.sh` 一次性重启解决
+
+#### v4.7 字段强校验（已交付，2026-07-02）
+- 完成态：企业新增/编辑时校验信用代码唯一性；合作期限新增时校验日期逻辑 + 拦截资质过期企业
+- 做了：
+  - **信用代码唯一性**：EnterpriseManageImpl.addEnterprise/editEnterprise 加校验（查询 enterprise 表 credit_Code 字段，重复则抛 ServiceException）
+  - **EnterpriseExample 扩展**：手动加 andCredit_CodeEqualTo 方法（v4.1 漏掉，导致 Example 类无法查询 credit_Code）
+  - **合作期限日期校验**：addCooperationPeriod 已有 Start_Date < End_Date 校验（无需修改）
+  - **资质过期拦截**：addCooperationPeriod 加校验（查询企业的 qualification_Expiry_Date，已过期则禁止新增合作期限）
+- 不做：前端校验（仅后端，简单方案）
+- 验证：mvn EXIT 0 + 3 实例部署 0 ERROR
+
+#### v4.10 前端优化（已交付，2026-07-02）
+- 完成态：统一美化所有台账页面 + 新增 3 个智能统计页面
+- 做了：
+  - **业务看板**（005001）：渐变紫色背景 + 4 个 KPI 卡片（数字滚动动画）+ 4 个 ECharts 图表（趋势/效率仪表盘/排行/来源饼图）+ 8 个快捷入口
+  - **投诉统计页**（005012）：3 个 ECharts 图表（合作方柱状图/来源饼图/状态饼图）+ 合作方投诉排行表
+  - **合作期限统计页**（005014）：4 个 KPI 卡片 + 2 个图表（状态分布/到期时间分布）+ 到期预警列表（颜色分级）
+  - **号码统计页**（005015）：4 个 KPI 卡片 + 4 个图表（类型/状态/合作方分布/使用率趋势）+ TOP 5 排行
+  - **合作方统计页**（005016）：4 个 KPI 卡片 + 4 个图表（状态/投诉率/规模/趋势）+ 合作方详情排行
+  - **统一美化**：合作方台账、合作期限台账、号码台账列表页（渐变背景 + 卡片布局 + hover 动效 + 圆角按钮）
+- 设计风格：现代化渐变背景 + 玻璃态效果 + ECharts 图表 + 数字动画 + 响应式布局
+- 菜单：005014/005015/005016 已添加，role 1/3/5 分配
+- 验证：mvn EXIT 0 + 3 实例部署 0 ERROR
+
 ### vNext 候选池
-- v4.4 投诉处理（complaint 表）
-- v4.5 业务台账聚合视图
-- v4.6 R4-A 拒收识别（unsubscribe_log 表，上行 TD 等关键词）
-- 字段强校验（信用代码唯一性、合作期限 Start≤End、资质过期拦截）
+- v4.5 业务台账聚合视图 → **已交付（业务看板 005001）**
+- v4.6 R4-A 拒收识别 → **已提前交付**
+- v4.7 字段强校验 → **已交付**
+- v4.8 投诉统计报表 → **已交付**
+- v4.9 拒收关键词配置 UI → **已交付**
+- v4.10 前端优化 → **已交付（3 个统计页面 + 3 个台账美化）**
+- 投诉附件上传（独立 RequestMapping，见 memory `sms-project-no-upload-endpoint`）
+- 拒撤恢复/二次发送逻辑
 - 不可篡改 DB 权限收紧（逐表分析写模式，人工门禁）
 - R4-D 字段加密（监管强制才做）
 - 更多告警渠道（短信/邮件/微信）

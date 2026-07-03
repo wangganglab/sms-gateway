@@ -39,7 +39,7 @@
 	<select id="getLimitsByUserId" parameterType="int"
 		resultMap="com.hero.wireless.web.dao.business.IAdminLimitDAO.BaseResultMap">
 		<![CDATA[ 
-			SELECT b.* FROM admin_role_limit a INNER JOIN admin_limit b ON
+			SELECT DISTINCT b.* FROM admin_role_limit a INNER JOIN admin_limit b ON
 			a.limit_id=b.Id INNER JOIN admin_user_roles c ON a.Role_Id=c.Role_Id
 			WHERE c.User_Id=#{value} ORDER BY b.Code
 		]]>
@@ -48,7 +48,7 @@
 	<select id="getLimitsByUserIdAndOrderId" parameterType="int"
 		resultMap="com.hero.wireless.web.dao.business.IAdminLimitDAO.BaseResultMap">
 		<![CDATA[
-			SELECT b.* FROM admin_role_limit a INNER JOIN admin_limit b ON
+			SELECT DISTINCT b.* FROM admin_role_limit a INNER JOIN admin_limit b ON
 			a.limit_id=b.Id INNER JOIN admin_user_roles c ON a.Role_Id=c.Role_Id
 			WHERE c.User_Id=#{value} ORDER BY b.Order_Id ASC
 		]]>

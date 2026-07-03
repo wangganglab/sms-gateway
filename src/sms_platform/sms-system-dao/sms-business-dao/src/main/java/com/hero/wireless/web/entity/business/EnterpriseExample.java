@@ -501,6 +501,11 @@ public class EnterpriseExample extends BaseExample {
             return (Criteria) this;
         }
 
+        public Criteria andCredit_CodeEqualTo(String value) {
+            addCriterion("Credit_Code =", value, "credit_Code");
+            return (Criteria) this;
+        }
+
         public Criteria andNameNotEqualTo(String value) {
             addCriterion("Name <>", value, "name");
             return (Criteria) this;
