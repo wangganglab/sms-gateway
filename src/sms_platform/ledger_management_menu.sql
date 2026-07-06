@@ -8,6 +8,10 @@
 INSERT INTO admin_limit (Name, Code, Up_Code, Url, Type_Code, Icon, Order_Id, Create_Date) VALUES
 ('台账管理','021','00','/admin/enterprise/account_ledger_list.jsp','menu','layui-icon-template-1',21,NOW());
 
+-- ★ 二级菜单 021010 企业台账（侧边栏实际点击入口，type_Code='menu'）
+INSERT INTO admin_limit (Name, Code, Up_Code, Url, Type_Code, Order_Id, Create_Date) VALUES
+('企业台账','021010','021','/admin/enterprise/account_ledger_list.jsp','menu',1,NOW());
+
 -- 列表数据接口权限（必须配，否则表格加载被 RBAC 拦截）
 INSERT INTO admin_limit (Name, Code, Up_Code, Url, Type_Code, Order_Id, Create_Date) VALUES
 ('台账列表','021000','021','/admin/account_ledgerList','button',1,NOW());

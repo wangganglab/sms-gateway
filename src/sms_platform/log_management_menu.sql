@@ -8,6 +8,10 @@
 INSERT INTO admin_limit (Name, Code, Up_Code, Url, Type_Code, Icon, Order_Id, Create_Date) VALUES
 ('日志管理','020','00','/admin/log/sms_log_list.jsp','menu','layui-icon-log',20,NOW());
 
+-- ★ 二级菜单 020010 短信日志（侧边栏实际点击入口，type_Code='menu'）
+INSERT INTO admin_limit (Name, Code, Up_Code, Url, Type_Code, Order_Id, Create_Date) VALUES
+('短信日志','020010','020','/admin/log/sms_log_list.jsp','menu',1,NOW());
+
 -- 列表数据接口权限（必须配，否则表格加载被 RBAC 拦截）
 INSERT INTO admin_limit (Name, Code, Up_Code, Url, Type_Code, Order_Id, Create_Date) VALUES
 ('短信日志列表','020000','020','/admin/sms_logList','button',1,NOW());
