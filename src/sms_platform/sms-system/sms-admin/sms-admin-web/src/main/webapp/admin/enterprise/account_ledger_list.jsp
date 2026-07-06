@@ -3,7 +3,7 @@
 <%@ include file="/admin/common/common.jsp" %>
 <%@ include file="/admin/common/layui_head.html" %>
 <style>
-    /* 页面标题区样式 - 匹配截图风格 */
+    /* 页面标题区样式 */
     .page-header-bar {
         display: flex;
         justify-content: space-between;
@@ -27,40 +27,6 @@
         font-size: 13px;
         color: #999;
     }
-    .page-header-right {
-        display: flex;
-        gap: 10px;
-        padding-top: 5px;
-    }
-    .page-header-right .btn-action {
-        display: inline-flex;
-        align-items: center;
-        gap: 5px;
-        padding: 7px 16px;
-        border: 1px solid #d9d9d9;
-        border-radius: 4px;
-        background: #fff;
-        color: #666;
-        font-size: 13px;
-        cursor: pointer;
-        transition: all 0.3s;
-    }
-    .page-header-right .btn-action:hover {
-        color: #5B6ABF;
-        border-color: #5B6ABF;
-    }
-    .page-header-right .btn-action i {
-        font-size: 14px;
-    }
-    .page-header-right .btn-refresh {
-        background: #5B6ABF;
-        color: #fff;
-        border-color: #5B6ABF;
-    }
-    .page-header-right .btn-refresh:hover {
-        background: #4a59a8;
-        color: #fff;
-    }
 
     /* 搜索表单区域 */
     .search-card .layui-form-item {
@@ -81,39 +47,6 @@
         line-height: 36px;
         font-size: 13px;
     }
-    .search-card .search-btn-row {
-        padding: 10px 0 15px 0;
-    }
-    .search-card .btn-search {
-        padding: 0 30px;
-        height: 36px;
-        line-height: 36px;
-        background: #2c3e6b;
-        color: #fff;
-        border: none;
-        border-radius: 4px;
-        font-size: 14px;
-        cursor: pointer;
-    }
-    .search-card .btn-search:hover {
-        background: #1e2d52;
-    }
-    .search-card .btn-reset {
-        padding: 0 20px;
-        height: 36px;
-        line-height: 36px;
-        background: #f5f5f5;
-        color: #666;
-        border: 1px solid #d9d9d9;
-        border-radius: 4px;
-        font-size: 14px;
-        cursor: pointer;
-        margin-left: 10px;
-    }
-    .search-card .btn-reset:hover {
-        color: #5B6ABF;
-        border-color: #5B6ABF;
-    }
 
     /* 数据表格区域 */
     .data-card .layui-card-body {
@@ -126,29 +59,6 @@
         padding: 10px 0 5px 0;
         font-size: 13px;
         color: #999;
-    }
-    .data-card .table-footer .pagination {
-        display: flex;
-        align-items: center;
-        gap: 5px;
-    }
-    .data-card .table-footer .pagination button {
-        padding: 4px 12px;
-        border: 1px solid #d9d9d9;
-        border-radius: 3px;
-        background: #fff;
-        color: #666;
-        font-size: 12px;
-        cursor: pointer;
-    }
-    .data-card .table-footer .pagination button.active {
-        background: #5B6ABF;
-        color: #fff;
-        border-color: #5B6ABF;
-    }
-    .data-card .table-footer .pagination button:hover:not(.active) {
-        border-color: #5B6ABF;
-        color: #5B6ABF;
     }
 
     /* 合作状态标签样式 */
@@ -169,13 +79,13 @@
             <p>在管企业台账信息</p>
         </div>
         <div class="page-header-right">
-            <button class="btn-action" lay-event="batchImport">
+            <button class="layui-btn layui-btn-sm" lay-event="batchImport">
                 <i class="layui-icon layui-icon-upload"></i> 批量导入
             </button>
-            <button class="btn-action" lay-event="exportList">
+            <button class="layui-btn layui-btn-sm" lay-event="exportList">
                 <i class="layui-icon layui-icon-download-circle"></i> 导出列表
             </button>
-            <button class="btn-action btn-refresh" id="btnRefreshData">
+            <button class="layui-btn layui-btn-sm layui-btn-normal" id="btnRefreshData">
                 <i class="layui-icon layui-icon-refresh"></i> 刷新数据
             </button>
         </div>
@@ -254,9 +164,9 @@
                     </div>
                 </div>
                 <div class="layui-col-md4">
-                    <div class="search-btn-row">
-                        <button class="btn-search" type="submit" lay-submit="" lay-filter="reload">搜索</button>
-                        <button class="btn-reset" type="button" id="btnReset">重置</button>
+                    <div>
+                        <button class="layui-btn layui-btn-sm" type="submit" lay-submit="" lay-filter="reload">搜索</button>
+                        <button class="layui-btn layui-btn-sm layui-btn-primary" type="button" id="btnReset">重置</button>
                     </div>
                 </div>
             </div>
@@ -274,7 +184,6 @@
             </script>
             <div class="table-footer">
                 <span id="totalCount">共计 0 条记录</span>
-                <div class="pagination" id="pagination"></div>
             </div>
         </div>
     </div>
