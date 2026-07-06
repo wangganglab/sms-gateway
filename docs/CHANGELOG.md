@@ -111,6 +111,23 @@
 - 菜单：005014/005015/005016 已添加，role 1/3/5 分配
 - 验证：mvn EXIT 0 + 3 实例部署 0 ERROR
 
+## 大版本 v5：导航整合
+> ⚠️ 北极星/完成态待开发 session 回填——本段由部署 session 按部署事实记录。开发 session 在 SQL 注释/commit 命名为 v5.0。
+
+### v5.0 台账/日志一级菜单壳页面（已交付，2026-07-07）
+- 完成态：管理员侧边栏新增两个一级菜单「日志管理」(020)、「台账管理」(021)，点进去是列表页 UI；数据接口为桩（返回空），TODO 后续对接联合查询
+- 做了：
+  - `EnterpriseController` +`account_ledgerList()`、`SendedController` +`sms_logList()`（桩接口，`asSuccessString(new ArrayList<>(), 0)`）
+  - 2 JSP：`admin/enterprise/account_ledger_list.jsp`、`admin/log/sms_log_list.jsp`（搜索表单 + layui 表格 + 静态 UI）
+  - 2 菜单 SQL：020 日志管理 + 021 台账管理（各 1 menu + 3 button/showbutton + role 1/3/5 分配，导入 `sms_business`）
+- 不做（进 vNext）：列表数据接口对接（input_log+inbox / enterprise+product+signature 联合查询）、批量导入 jsp+接口、导出
+- 验证：mvn BUILD SUCCESS + 3 实例部署（admin 200、新接口 302 已注册非 404）+ 菜单 8 limit 入库 + role 各 8 权限；Web 端到端待人工冒烟
+
+### 附：netway ROW_FORMAT 运行时坑修复（2026-07-07，部署副作用，与 v5.0 无关）
+- `deploy-sms.sh` 全重启触发 netway 崩溃：`createTableTask` 建 `input_log20260713` 时 `ROW_FORMAT=COMPACT` 致 row size>8126 → `BeanCreationException` → context 关闭
+- 修：4 个 send-dao mapper（`InputLog`/`Submit`/`Report`/`ReportNotify` `ExtMapper.xml`）`COMPACT→DYNAMIC` + 重建 netway war + 只重部署 netway（`/tools/deploy-netway-only.sh`）
+- 详见 `docs/04-对话与进度.md` 阶段 10 + memory `sms-platform-deployed`
+
 ### vNext 候选池
 - v4.5 业务台账聚合视图 → **已交付（业务看板 005001）**
 - v4.6 R4-A 拒收识别 → **已提前交付**

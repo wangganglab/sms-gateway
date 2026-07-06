@@ -84,6 +84,9 @@
 - 🔄 第3批 R3：时限清理定时任务 ✅（扩展 DropTableTask + code 表配置项）+ 管理员设置 ✅（复用 015003）；不可篡改(DB权限收紧) ⏸ 留人工门禁
 - 🔄 第4批 R5/R4-A：数据基础 ✅（3 新表 + enterprise 扩 6 字段/product 扩 4 字段）；**v4.1 合作方台账 ✅**（2026-07-01，enterprise 扩字段展示/录入+菜单 005007）；**v4.2 合作期限台账 ✅**（2026-07-01，独立 cooperation_period CRUD+菜单 005008+列表高亮+状态代替删除；合同附件留 vNext）；**v4.3 号码台账 ✅**（2026-07-02，product 扩 4 字段展示/录入+菜单 005009；仿 v4.1 模式 Controller/Service 免改）；**v4.4 投诉处理 ✅**（2026-07-02，complaint 独立 CRUD+菜单 005010+5 JSP 列表/新增/编辑/处理/详情+状态三态流转+来源三字典+role 1/3/5；5 条测试数据）；**v4.5 跳过**（4 个独立台账已有列表页，ROI 低）；**v4.6 拒收识别 ✅**（2026-07-02，修改 AbstractSenderService.autoAddBlack 写入 sms_send.unsubscribe_log+菜单 005011+2 JSP 列表/详情+role 1/3/5；5 条测试数据；默认关键词 T,TD,退订）；**v4.7 字段强校验 ✅**（2026-07-02，信用代码唯一性+合作期限日期校验+资质过期拦截；EnterpriseExample 补 andCredit_CodeEqualTo）；**v4.8 投诉统计报表 ✅**（2026-07-02，按企业/来源/状态 3 维度统计）；**v4.9 拒收关键词配置 UI ✅**（2026-07-02，管理界面配置拒收关键词，写入 code 表 system_env）；vNext 候选池：投诉附件上传 / 拒撤恢复（见 `docs/CHANGELOG.md`）
 
+- ✅ **v5.0 台账/日志菜单壳页面已部署**（2026-07-07）：菜单 020 日志管理 + 021 台账管理 + 2 JSP（sms_log_list / account_ledger_list）+ 2 桩接口（`sms_logList`/`account_ledgerList`，返回空，TODO 后续对接联合查询）；导入 2 个菜单 SQL 到 sms_business（role 1/3/5 各 8 权限）。半成品：菜单 SQL 声明的 import/export 按钮 jsp 与接口未实现
+- ✅ **netway ROW_FORMAT 运行时坑修复**（2026-07-07）：deploy 重启 netway 时 `createTableTask` 建 `input_log20260713` 失败（COMPACT row size>8126）→ Bean 初始化失败 → netway 崩溃；改 4 个 send-dao mapper（InputLog/Submit/Report/ReportNotify `*ExtMapper.xml`）COMPACT→DYNAMIC + 重部署 netway，3 实例恢复 200/200/302
+
 **本地开发工作流**：`sms-gateway/` git 仓库（main），源码基线在 `src/sms_platform/`，本地改 → `deploy-sms.sh` 部署。权限改动无需重启（实时查库）。
 
 - 日常运维：配上游通道(CMPP/HTTP)打通发送 / playSMS(8877) 弃用后按 docs/03 清理

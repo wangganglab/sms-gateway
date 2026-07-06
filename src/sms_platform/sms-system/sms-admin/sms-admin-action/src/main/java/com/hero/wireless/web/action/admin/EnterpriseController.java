@@ -1392,4 +1392,14 @@ public class EnterpriseController extends BaseAdminController {
         }
     }
 
+    /**
+     * 台账管理 - 在管企业台账信息列表
+     * TODO: 后续对接 enterprise + product + sms_signature 联合查询
+     */
+    @RequestMapping("account_ledgerList")
+    @ResponseBody
+    public String accountLedgerList() {
+        return new LayUiObjectMapper().asSuccessString(new ArrayList<>(), 0);
+    }
+
 }

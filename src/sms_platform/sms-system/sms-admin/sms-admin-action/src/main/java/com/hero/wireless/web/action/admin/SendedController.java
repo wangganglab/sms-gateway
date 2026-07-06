@@ -955,4 +955,14 @@ public class SendedController extends BaseAdminController {
             return new SmsUIObjectMapper().asErrorString();
         }
     }
+
+    /**
+     * 日志管理 - 短信日志列表（发送/接收信息日志）
+     * TODO: 后续对接 input_log + inbox 联合查询
+     */
+    @RequestMapping("sms_logList")
+    @ResponseBody
+    public String smsLogList() {
+        return new LayUiObjectMapper().asSuccessString(new ArrayList<>(), 0);
+    }
 }
