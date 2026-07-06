@@ -391,7 +391,7 @@
           KEY Submit_Date (Submit_Date) USING BTREE,
           KEY Channel_Sub_Msg_No (Channel_Msg_Id) USING BTREE,
           KEY Enterprise_Msg_No (Msg_Batch_No) USING BTREE
-        ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC
   	</update>
 
 

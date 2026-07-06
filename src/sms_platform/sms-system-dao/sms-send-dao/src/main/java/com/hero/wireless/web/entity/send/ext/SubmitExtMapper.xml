@@ -588,7 +588,7 @@
           KEY Index_Submit_Date (Submit_Date) USING BTREE,
           KEY Index_Enterprise_Id (Enterprise_No) USING BTREE,
           KEY Phone_No (Phone_No) USING BTREE
-        ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC
   	</update>
 
     <select id="querySendSpeedByExamplePage" parameterType="com.hero.wireless.web.entity.send.SubmitExample"

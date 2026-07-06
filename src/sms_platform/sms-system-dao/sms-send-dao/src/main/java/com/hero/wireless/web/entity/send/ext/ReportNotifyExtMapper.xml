@@ -85,6 +85,6 @@
       KEY Enterprise_Msg_No (Msg_Batch_No) USING BTREE,
       KEY Phone_No (Phone_No) USING BTREE,
       KEY Submit_Date (Submit_Date) USING BTREE
-    ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC
   </update>
 </mapper>

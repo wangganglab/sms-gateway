@@ -277,7 +277,7 @@
 		  PRIMARY KEY (Id) USING BTREE,
 		  KEY Enterprise_Msg_No (Msg_Batch_No) USING BTREE,
 		  KEY Create_Date (Create_Date)
-		) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT
+		) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC
   	</update>
 
 	<update id="dropInputLogTable" parameterType="com.hero.wireless.web.entity.send.ext.InputLogExt">
