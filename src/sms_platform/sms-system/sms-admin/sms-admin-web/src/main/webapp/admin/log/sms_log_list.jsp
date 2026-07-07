@@ -115,9 +115,9 @@
             <div class="layui-row layui-col-space10" style="padding: 0 20px;">
                 <div class="layui-col-md4">
                     <div class="layui-form-item" style="margin-bottom: 10px;">
-                        <label class="layui-form-label">手机号</label>
+                        <label class="layui-form-label">接收手机号</label>
                         <div class="layui-input-block">
-                            <input name="phone_Nos" class="layui-input" placeholder="请输入手机号"/>
+                            <input name="phone_Nos" class="layui-input" placeholder="请输入接收手机号"/>
                         </div>
                     </div>
                 </div>
@@ -164,9 +164,9 @@
                     </div>
                 </div>
             </div>
-            <div class="layui-row layui-col-space10" style="padding: 0 20px 15px 20px;">
+            <div class="layui-row layui-col-space10" style="padding: 0 20px;">
                 <div class="layui-col-md4">
-                    <div class="layui-form-item" style="margin-bottom: 0;">
+                    <div class="layui-form-item" style="margin-bottom: 10px;">
                         <label class="layui-form-label">发送人ID</label>
                         <div class="layui-input-block">
                             <input name="business_User_Id" class="layui-input" placeholder="请输入发送人ID"/>
@@ -174,10 +174,36 @@
                     </div>
                 </div>
                 <div class="layui-col-md4">
-                    <div class="layui-form-item" style="margin-bottom: 0;">
+                    <div class="layui-form-item" style="margin-bottom: 10px;">
                         <label class="layui-form-label">所属地区</label>
                         <div class="layui-input-block">
                             <input name="area" class="layui-input" placeholder="请输入所属地区"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-col-md4">
+                    <div class="layui-form-item" style="margin-bottom: 10px;">
+                        <label class="layui-form-label">发送手机号</label>
+                        <div class="layui-input-block">
+                            <input name="send_Phone" class="layui-input" placeholder="请输入发送手机号"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-row layui-col-space10" style="padding: 0 20px 15px 20px;">
+                <div class="layui-col-md4">
+                    <div class="layui-form-item" style="margin-bottom: 0;">
+                        <label class="layui-form-label">拒收内容</label>
+                        <div class="layui-input-block">
+                            <input name="reject_Content" class="layui-input" placeholder="请输入拒收内容"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-col-md4">
+                    <div class="layui-form-item" style="margin-bottom: 0;">
+                        <label class="layui-form-label">拒收时间</label>
+                        <div class="layui-input-block">
+                            <input name="reject_Time" id="rejectTime" type="text" class="layui-input" placeholder="请选择拒收时间" readonly/>
                         </div>
                     </div>
                 </div>
@@ -225,6 +251,11 @@
             type: 'datetime',
             trigger: 'click'
         });
+        laydate.render({
+            elem: '#rejectTime',
+            type: 'datetime',
+            trigger: 'click'
+        });
 
         // 表格渲染
         table.render({
@@ -238,11 +269,14 @@
                 {field: 'product_No', title: '端口', width: 120},
                 {field: 'sub_Code', title: '子端口', width: 120},
                 {field: 'userName', title: '用户名', width: 100},
-                {field: 'phone_Nos', title: '手机号', width: 140},
+                {field: 'phone_Nos', title: '接收手机号', width: 140},
+                {field: 'send_Phone', title: '发送手机号', width: 140},
                 {field: 'send_Time', title: '发送时间', width: 170},
                 {field: 'content', title: '发送内容', minWidth: 200},
                 {field: 'receive_Time', title: '接收时间', width: 170},
                 {field: 'receive_Content', title: '接收内容', minWidth: 150},
+                {field: 'reject_Time', title: '拒收时间', width: 170},
+                {field: 'reject_Content', title: '拒收内容', minWidth: 150},
                 {field: 'send_Status', title: '发送状态', width: 100},
                 {field: 'business_User_Id', title: '发送人ID', width: 100},
                 {field: 'area', title: '所属地区', width: 120},

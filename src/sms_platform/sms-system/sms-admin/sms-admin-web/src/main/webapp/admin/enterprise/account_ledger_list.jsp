@@ -146,9 +146,9 @@
                     </div>
                 </div>
             </div>
-            <div class="layui-row layui-col-space10" style="padding: 0 20px 15px 20px;">
+            <div class="layui-row layui-col-space10" style="padding: 0 20px;">
                 <div class="layui-col-md4">
-                    <div class="layui-form-item" style="margin-bottom: 0;">
+                    <div class="layui-form-item" style="margin-bottom: 10px;">
                         <label class="layui-form-label">业务类型</label>
                         <div class="layui-input-block">
                             <input name="trade_Type" class="layui-input" placeholder="请输入业务类型"/>
@@ -156,7 +156,7 @@
                     </div>
                 </div>
                 <div class="layui-col-md4">
-                    <div class="layui-form-item" style="margin-bottom: 0;">
+                    <div class="layui-form-item" style="margin-bottom: 10px;">
                         <label class="layui-form-label">合作状态</label>
                         <div class="layui-input-block">
                             <input name="cooperation_Status" class="layui-input" placeholder="请输入合作状态"/>
@@ -164,7 +164,26 @@
                     </div>
                 </div>
                 <div class="layui-col-md4">
-                    <div>
+                    <div class="layui-form-item" style="margin-bottom: 10px;">
+                        <label class="layui-form-label">协议合同文本</label>
+                        <div class="layui-input-block">
+                            <input name="contract_Url" class="layui-input" placeholder="请输入协议合同文本"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-row layui-col-space10" style="padding: 0 20px 15px 20px;">
+                <div class="layui-col-md4">
+                    <div class="layui-form-item" style="margin-bottom: 0;">
+                        <label class="layui-form-label">营业执照/法人证书</label>
+                        <div class="layui-input-block">
+                            <input name="business_License" class="layui-input" placeholder="请输入营业执照/事业单位法人证书"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-col-md4"></div>
+                <div class="layui-col-md4">
+                    <div style="padding: 0;">
                         <button class="layui-btn layui-btn-sm" type="submit" lay-submit="" lay-filter="reload">搜索</button>
                         <button class="layui-btn layui-btn-sm layui-btn-primary" type="button" id="btnReset">重置</button>
                     </div>
@@ -224,6 +243,12 @@
                         return '<span class="status-inactive">终止</span>';
                     }
                     return status || '---';
+                }},
+                {field: 'contract_Url', title: '协议合同文本', width: 160, templet: function(d){
+                    return d.contract_Url ? '<a href="' + d.contract_Url + '" target="_blank" style="color:#01AAED;">查看</a>' : '---';
+                }},
+                {field: 'business_License', title: '营业执照/事业单位法人证书', width: 200, templet: function(d){
+                    return d.business_License ? '<a href="' + d.business_License + '" target="_blank" style="color:#01AAED;">查看</a>' : '---';
                 }},
                 {title: '操作', width: 120, toolbar: '#operateTpl', fixed: 'right'}
             ]],
